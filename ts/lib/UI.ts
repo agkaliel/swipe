@@ -74,7 +74,32 @@ class UI {
 
         this.cardsListElement.appendChild(u.element);
 
+        u.element.addEventListener('click', () => {
+            u.onCardClicked();
+
+            let numberOfSelectedCards = 0
+            this.cards.forEach((c) => {
+                if (c.selected) {
+                    numberOfSelectedCards++;
+                }
+            });
+
+            if (numberOfSelectedCards >= CONSTANTS.maxPlayable) {
+                this.disableUnselectedCards();
+            } else {
+                this.enableCards();
+            }
+        });
+
         return u;
+    }
+
+    disableUnselectedCards() {
+        this.cards.forEach((c) => {
+            if (!c.selected) {
+                c.disabled = true;
+            }
+        });
     }
 
     public replaceCard (newCard: Card, oldCard: Card): UICard {

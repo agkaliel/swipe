@@ -1,0 +1,44 @@
+main {
+  display: inline-flex;
+  flex-direction: column; }
+
+.betting {
+  display: flex;
+ }
+  
+ .betting > * {
+    margin-right: 10px;
+ }
+
+.cards {
+  display: flex;
+ }
+  
+ .cards .card {
+    padding: 10px;
+    cursor: pointer;
+ }
+.cards .card.selected {
+      background-color: #0f0;
+}
+.cards .card.disabled {
+      background-color: rgba(0, 0, 0, 0.1);
+      opacity: 0.2;
+}
+
+.cards .card:not(.disabled):not(.selected):hover {
+      background-color: rgba(0, 0, 0, 0.4);
+      opacity: 0.5;
+}
+
+.cards .card img {
+      width: 100px;
+}
+
+.buttons {
+  
+}
+
+.play-card-button {
+  font-size: 30px;
+}
