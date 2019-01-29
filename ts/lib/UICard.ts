@@ -16,7 +16,6 @@ class UICard {
         return this._selected;
     }
 
-
     public set selected (value: boolean) {
         this._selected = value;
         this.element.classList.toggle('selected', this._selected);

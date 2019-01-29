@@ -16,6 +16,12 @@ function init (): void {
         msg('Click on the card you wish to play');
     })
 
+    ui.confirmMoveButton.addEventListener('click', function() {
+        ui.playSelectedCards();
+    });
+
+
+
     // ui.betButton.addEventListener('click', function () {
     //     let bet: number = parseInt(ui.betInput.value);
     //     if (bet > player.cash && bet <= 0) return;
