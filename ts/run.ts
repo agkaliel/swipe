@@ -76,6 +76,7 @@ function init (): void {
 
 function reset () {
     // ui.betMode();
+    ui.clearPlayingArea();
     ui.clearCards();
     ui.enableCards();
     clearMsg();

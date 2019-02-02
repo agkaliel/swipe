@@ -6,6 +6,7 @@ class UI {
     public readonly newGameButton: HTMLButtonElement;
     public readonly msg: HTMLParagraphElement;
     private _cards: Map<Card, UICard>;
+    private _cardsInPlayingAreaMap: Map<Card, UICard>;
 
     public constructor (parent: Element) {
         this.parent = parent;
@@ -16,6 +17,7 @@ class UI {
         this.playingAreaElement = <Element> parent.querySelector('.playingArea');
         this.msg = <HTMLParagraphElement> parent.querySelector('.msg');
 
+        this._cardsInPlayingAreaMap = new Map();
         this._cards = new Map();
     }
 
@@ -40,18 +42,23 @@ class UI {
 
     public addCards(cards: Card[]) {
         cards.forEach(card => {
-            this.addCard(card);
+            this.addCardToHand(card);
         })
     }
 
-    public addCard (card: Card): UICard {
+    public addCardToHand (card: Card): UICard {
         let u = new UICard(card);
         this._cards.set(card, u);
 
         this.playerHandElement.appendChild(u.element);
+        this.subscribeToCardClicks(u);
 
-        u.element.addEventListener('click', () => {
-            u.onCardClicked();
+        return u;
+    }
+
+    subscribeToCardClicks(uiCard: UICard) {
+        uiCard.element.addEventListener('click', () => {
+            uiCard.onCardClicked();
 
             let numberOfSelectedCards = 0
             this.cards.forEach((c) => {
@@ -70,27 +77,35 @@ class UI {
                 this.confirmMoveButton.disabled = false;
             }
         });
-
-        return u;
     }
 
     playSelectedCards() {
+        this.clearPlayingArea();
         this.cards.forEach((uiCard, card) => {
             if (uiCard.selected) {
-                this.addCardToPlayingArea(card);
-                uiCard.selected = false;
+                this.playCard(card);
             }
         })
 
         this.setNewTurn();
     }
 
-    // removeCardFromHand(card: Card): void {
-    //     this._cards.delete(card);
-    // }
+    clearPlayingArea() {
+        this._cardsInPlayingAreaMap = new Map();
+
+        while (this.playingAreaElement.firstChild) {
+            this.playingAreaElement.removeChild(this.playingAreaElement.firstChild);
+        }
+    }
+
+    playCard(card: Card) {
+        this.addCardToPlayingArea(card);
+        this.removeCardFromHand(card);
+    }
 
     addCardToPlayingArea(card: Card): UICard {
         let u = new UICard(card);
+        this._cardsInPlayingAreaMap.set(card, u);
         this.playingAreaElement.appendChild(u.element);
         return u;
     }
@@ -107,6 +122,15 @@ class UI {
         this.cards.forEach((c) => {
             c.disabled = true;
         });
+    }
+
+    removeCardFromHand(card: Card) {
+        let uiCard = this._cards.get(card)
+        if (!uiCard) {
+            throw 'Card not in display';
+        }
+        this.playerHandElement.removeChild(uiCard.element);
+        this._cards.delete(card);
     }
 
     public replaceCard (newCard: Card, oldCard: Card): UICard {
