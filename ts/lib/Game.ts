@@ -1,42 +1,41 @@
 class Game {
-    private ui: UI;
+    private round: Round;
+    public readonly newGameButton: HTMLButtonElement;
+    public readonly msg: HTMLParagraphElement;
 
     public constructor() {
-        this.ui = new UI(document.querySelector('main')!);
-        this.ui.newGameButton.addEventListener('click', () => {
+        this.round = new Round(document.querySelector('main')!);
+        this.newGameButton = <HTMLButtonElement> document.querySelector('.new-game-button');
+        this.newGameButton.addEventListener('click', () => {
             this.onNewGameClick();
-        })
-        this.ui.confirmMoveButton.addEventListener('click', () => {
-            this.ui.playSelectedCards();
         });
+        this.round.confirmMoveButton.addEventListener('click', () => {
+            this.round.playSelectedCards();
+        });
+        this.msg = <HTMLParagraphElement> document.querySelector('.msg');
     }
 
     private onNewGameClick() {
         this.reset();
-        let round = new Round();
-        round.draw();
-        this.ui.addCardsToHand(round.getCards());
-        this.ui.playMode();
-        this.msg('Click on the card you wish to play');
+        this.round = new Round(document.querySelector('main')!);
+        this.round.draw();
+        this.round.addCardsToHand(this.round.getCards());
+        this.round.playMode();
+        this.setMessage('Click on the card you wish to play');
     }
 
     private reset() {
-        // ui.betMode();
-        this.ui.clearPlayingArea();
-        this.ui.clearCards();
-        this.ui.enableCards();
+        this.round.clearPlayingArea();
+        this.round.clearCards();
+        this.round.enableCards();
         this.clearMsg();
     }
 
     public clearMsg(): void {
-        // TODO: Move to UI classs
-        this.ui.msg.innerHTML = '';
+        this.msg.innerHTML = '';
     }
 
-    public msg(str: String): void {
-        // TODO: Move to ui class
-        this.ui.msg.innerHTML += str + '<br>';
+    public setMessage(str: String): void {
+        this.msg.innerHTML += str + '<br>';
     }
-
-
 }
