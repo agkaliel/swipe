@@ -15,7 +15,7 @@ class Game {
         this.reset();
         let round = new Round();
         round.draw();
-        this.ui.addCards(round.getCards());
+        this.ui.addCardsToHand(round.getCards());
         this.ui.playMode();
         this.msg('Click on the card you wish to play');
     }

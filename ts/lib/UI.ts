@@ -5,7 +5,7 @@ class UI {
     public readonly confirmMoveButton: HTMLButtonElement;
     public readonly newGameButton: HTMLButtonElement;
     public readonly msg: HTMLParagraphElement;
-    private _cards: Map<Card, UICard>;
+    private _cardsInHand: Map<Card, UICard>;
     private _cardsInPlayingAreaMap: Map<Card, UICard>;
 
     public constructor (parent: Element) {
@@ -18,7 +18,7 @@ class UI {
         this.msg = <HTMLParagraphElement> parent.querySelector('.msg');
 
         this._cardsInPlayingAreaMap = new Map();
-        this._cards = new Map();
+        this._cardsInHand = new Map();
     }
 
     public playMode (): void {
@@ -31,16 +31,16 @@ class UI {
     }
 
     public enableCards (): void {
-        this.cards.forEach((c) => {
+        this.cardsInHand.forEach((c) => {
             c.disabled = false;
         });
     }
 
-    public get cards (): Map<Card, UICard> {
-        return this._cards;
+    public get cardsInHand (): Map<Card, UICard> {
+        return this._cardsInHand;
     }
 
-    public addCards(cards: Card[]) {
+    public addCardsToHand(cards: Card[]) {
         cards.forEach(card => {
             this.addCardToHand(card);
         })
@@ -48,7 +48,7 @@ class UI {
 
     public addCardToHand (card: Card): UICard {
         let u = new UICard(card);
-        this._cards.set(card, u);
+        this._cardsInHand.set(card, u);
 
         this.playerHandElement.appendChild(u.element);
         this.subscribeToCardClicks(u);
@@ -61,7 +61,7 @@ class UI {
             uiCard.onCardClicked();
 
             let numberOfSelectedCards = 0
-            this.cards.forEach((c) => {
+            this.cardsInHand.forEach((c) => {
                 if (c.selected) {
                     numberOfSelectedCards++;
                 }
@@ -81,7 +81,7 @@ class UI {
 
     playSelectedCards() {
         this.clearPlayingArea();
-        this.cards.forEach((uiCard, card) => {
+        this.cardsInHand.forEach((uiCard, card) => {
             if (uiCard.selected) {
                 this.playCard(card);
             }
@@ -111,7 +111,7 @@ class UI {
     }
 
     disableUnselectedCards() {
-        this.cards.forEach((c) => {
+        this.cardsInHand.forEach((c) => {
             if (!c.selected) {
                 c.disabled = true;
             }
@@ -119,22 +119,22 @@ class UI {
     }
 
     public disableCards (): void {
-        this.cards.forEach((c) => {
+        this.cardsInHand.forEach((c) => {
             c.disabled = true;
         });
     }
 
     removeCardFromHand(card: Card) {
-        let uiCard = this._cards.get(card)
+        let uiCard = this.cardsInHand.get(card)
         if (!uiCard) {
             throw 'Card not in display';
         }
         this.playerHandElement.removeChild(uiCard.element);
-        this._cards.delete(card);
+        this.cardsInHand.delete(card);
     }
 
     public replaceCard (newCard: Card, oldCard: Card): UICard {
-        let oldUICard = this._cards.get(oldCard);
+        let oldUICard = this.cardsInHand.get(oldCard);
 
         if (oldUICard === undefined)
             throw 'Card not in display';
@@ -142,17 +142,25 @@ class UI {
         let u = new UICard(newCard);
 
         this.playerHandElement.replaceChild(u.element, oldUICard.element);
-        this._cards.delete(oldCard);
-        this._cards.set(newCard, u);
+        this.cardsInHand.delete(oldCard);
+        this.cardsInHand.set(newCard, u);
 
         return u;
     }
 
     public clearCards (): void {
-        this._cards = new Map();
+        this._cardsInHand = new Map();
 
         while (this.playerHandElement.firstChild) {
             this.playerHandElement.removeChild(this.playerHandElement.firstChild);
         }
+    }
+
+    public clearMsg(): void {
+        this.msg.innerHTML = '';
+    }
+
+    public setMessage(str: String): void {
+        this.msg.innerHTML += str + '<br>';
     }
 }
