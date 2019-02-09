@@ -1,22 +1,22 @@
 class Hand {
     private playerHandElement: Element;
     // Change from a map to UICard belongs to Card
-    private _cardsInHandMap: Map<Card, UICard>;
+    private _cardsMap: Map<Card, UICard>;
     private onCardsSelectedCallback: () => void;
 
     public constructor (parent, onCardsSelectedCallback: () => void) {
         this.onCardsSelectedCallback = onCardsSelectedCallback;
         this.playerHandElement = <Element> parent.querySelector('.playerHand');
-        this._cardsInHandMap = new Map();
+        this._cardsMap = new Map();
     }
 
-    public get cardsInHandMap (): Map<Card, UICard> {
-        return this._cardsInHandMap;
+    public get cardsMap (): Map<Card, UICard> {
+        return this._cardsMap;
     }
 
     public addCardToHand (card: Card): UICard {
         let u = new UICard(card);
-        this._cardsInHandMap.set(card, u);
+        this._cardsMap.set(card, u);
 
         this.playerHandElement.appendChild(u.element);
         this.subscribeToCardClicks(u);
@@ -33,7 +33,7 @@ class Hand {
 
     onCardClicked() {
         let numberOfSelectedCards = 0
-        this.cardsInHandMap.forEach((c) => {
+        this.cardsMap.forEach((c) => {
             if (c.selected) {
                 numberOfSelectedCards++;
             }
@@ -51,19 +51,19 @@ class Hand {
     }
 
     public enableCards (): void {
-        this.cardsInHandMap.forEach((c) => {
+        this.cardsMap.forEach((c) => {
             c.disabled = false;
         });
     }
 
     public disableCards (): void {
-        this.cardsInHandMap.forEach((c) => {
+        this.cardsMap.forEach((c) => {
             c.disabled = true;
         });
     }
 
     disableUnselectedCards() {
-        this.cardsInHandMap.forEach((c) => {
+        this.cardsMap.forEach((c) => {
             if (!c.selected) {
                 c.disabled = true;
             }
@@ -71,16 +71,16 @@ class Hand {
     }
 
     removeCardFromHand(card: Card) {
-        let uiCard = this.cardsInHandMap.get(card)
+        let uiCard = this.cardsMap.get(card)
         if (!uiCard) {
             throw 'Card not in display';
         }
         this.playerHandElement.removeChild(uiCard.element);
-        this.cardsInHandMap.delete(card);
+        this.cardsMap.delete(card);
     }
 
     public clearCards (): void {
-        this._cardsInHandMap = new Map();
+        this._cardsMap = new Map();
 
         while (this.playerHandElement.firstChild) {
             this.playerHandElement.removeChild(this.playerHandElement.firstChild);
