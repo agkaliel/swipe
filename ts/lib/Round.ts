@@ -1,18 +1,16 @@
 class Round {
     public readonly deck: Deck;
     public readonly hand: Hand;
-    private parent: Element;
     
     private playingAreaElement: Element;
-    public readonly confirmMoveButton: HTMLButtonElement;
+    public confirmMoveButton: ConfirmMoveButton;
     private _cardsInPlayingAreaMap: Map<Card, UICard>;
 
     public constructor (parent: Element) {
         this.deck = new Deck();
         this.deck.shuffle();
-        this.hand = new Hand(parent);
-        this.confirmMoveButton = <HTMLButtonElement> parent.querySelector('.confirm-move-button');
-        this.confirmMoveButton.hidden = true;
+        this.hand = new Hand(parent, () => this.confirmMoveButton.enable());
+        this.confirmMoveButton = new ConfirmMoveButton(parent, () => this.onConfirmMoveClick());
         this.playingAreaElement = <Element> parent.querySelector('.playingArea');
         this._cardsInPlayingAreaMap = new Map();
     }
@@ -25,26 +23,41 @@ class Round {
     }
 
     // Stay
-    public playMode (): void {
-        // this.confirmMoveButton.disabled = true;
-        this.confirmMoveButton.hidden = false;
+    public setPlayMode (): void {
+        this.confirmMoveButton.disable();
+        this.confirmMoveButton.show();
     }
 
     // Stay
     public setNewTurn(): void {
         this.hand.enableCards();
-        // this.confirmMoveButton.disabled = true;
+        this.confirmMoveButton.disable();
+    }
+
+    public newRound() {
+        this.clearPlayingArea();
+        this.clearCards();
+        this.hand.enableCards();
     }
 
     // Stay
-    playSelectedCards() {
-        this.clearPlayingArea();
+    private playSelectedCards() {
         this.hand.cardsInHandMap.forEach((uiCard, card) => {
             if (uiCard.selected) {
                 this.playCard(card);
             }
         })
+    }
 
+    // Stay
+    private playCard(card: Card) {
+        this.addCardToPlayingArea(card);
+        this.hand.removeCardFromHand(card);
+    }
+
+    private onConfirmMoveClick(): void {
+        this.clearPlayingArea();
+        this.playSelectedCards();
         this.setNewTurn();
     }
 
@@ -57,12 +70,6 @@ class Round {
         }
     }
 
-    // Stay
-    playCard(card: Card) {
-        this.addCardToPlayingArea(card);
-        this.hand.removeCardFromHand(card);
-    }
-
     // Playing area
     addCardToPlayingArea(card: Card): UICard {
         let u = new UICard(card);
@@ -71,11 +78,6 @@ class Round {
         return u;
     }
 
-    public newRound() {
-        this.clearPlayingArea();
-        this.clearCards();
-        this.hand.enableCards();
-    }
 
     clearCards() {
         this.hand.clearCards();

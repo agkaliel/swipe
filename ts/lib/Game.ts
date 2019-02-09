@@ -9,9 +9,7 @@ class Game {
         this.newGameButton.addEventListener('click', () => {
             this.onNewGameClick();
         });
-        this.round.confirmMoveButton.addEventListener('click', () => {
-            this.round.playSelectedCards();
-        });
+
         this.msg = <HTMLParagraphElement> document.querySelector('.msg');
     }
 
@@ -19,7 +17,7 @@ class Game {
         this.reset();
         this.round = new Round(document.querySelector('main')!);
         this.round.draw();
-        this.round.playMode();
+        this.round.setPlayMode();
         this.setMessage('Click on the card you wish to play');
     }
 

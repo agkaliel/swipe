@@ -2,8 +2,10 @@ class Hand {
     private playerHandElement: Element;
     // Change from a map to UICard belongs to Card
     private _cardsInHandMap: Map<Card, UICard>;
+    private onCardsSelectedCallback: () => void;
 
-    public constructor (parent) {
+    public constructor (parent, onCardsSelectedCallback: () => void) {
+        this.onCardsSelectedCallback = onCardsSelectedCallback;
         this.playerHandElement = <Element> parent.querySelector('.playerHand');
         this._cardsInHandMap = new Map();
     }
@@ -44,8 +46,7 @@ class Hand {
         }
 
         if (numberOfSelectedCards >= 1) {
-            // Pass in button object?
-            // this.confirmMoveButton.disabled = false;
+            this.onCardsSelectedCallback();
         }
     }
 
