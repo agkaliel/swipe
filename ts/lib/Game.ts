@@ -19,15 +19,12 @@ class Game {
         this.reset();
         this.round = new Round(document.querySelector('main')!);
         this.round.draw();
-        this.round.addCardsToHand(this.round.getCards());
         this.round.playMode();
         this.setMessage('Click on the card you wish to play');
     }
 
     private reset() {
-        this.round.clearPlayingArea();
-        this.round.clearCards();
-        this.round.enableCards();
+        this.round.newRound();
         this.clearMsg();
     }
 
