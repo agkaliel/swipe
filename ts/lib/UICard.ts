@@ -12,20 +12,20 @@ class UICard {
         this.img.src = 'img/' + this.card.imageName;
     }
 
-    public get selected (): boolean {
+    public get selected(): boolean {
         return this._selected;
     }
 
-    public set selected (value: boolean) {
+    public set selected(value: boolean) {
         this._selected = value;
         this.element.classList.toggle('selected', this._selected);
     }
 
-    public get disabled (): boolean {
+    public get disabled(): boolean {
         return this._disabled;
     }
 
-    public set disabled (value: boolean) {
+    public set disabled(value: boolean) {
         this._disabled = value;
         this.element.classList.toggle('disabled', this.disabled);
     }

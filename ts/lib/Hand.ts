@@ -26,8 +26,10 @@ class Hand {
 
     subscribeToCardClicks(uiCard: UICard) {
         uiCard.element.addEventListener('click', () => {
-            uiCard.onCardClicked();    
-            this.onCardClicked();       
+            if (!uiCard.disabled) {
+                uiCard.onCardClicked();    
+                this.onCardClicked(); 
+            }
         });
     }
 

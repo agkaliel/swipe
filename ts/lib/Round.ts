@@ -7,7 +7,6 @@ class Round {
     private confirmMoveButton: ConfirmMoveButton;
 
     public constructor (parent: Element) {
-        console.log('building round');
         this.deck = new Deck();
         this.deck.shuffle();
         this.confirmMoveButton = new ConfirmMoveButton(parent, () => this.onConfirmMoveClick());
@@ -25,7 +24,6 @@ class Round {
         this.draw();
         this.currentTurnIndex = 0;
         this.nextTurn();
-        console.log('showing button');
         this.confirmMoveButton.show();
     }
 
