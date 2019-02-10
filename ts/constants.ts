@@ -1,3 +1,4 @@
 const CONSTANTS = {
-    maxPlayable: 2
+    maxPlayable: 2,
+    handSize: 8
 }

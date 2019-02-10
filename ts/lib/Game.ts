@@ -4,7 +4,6 @@ class Game {
     public readonly msg: HTMLParagraphElement;
 
     public constructor() {
-        this.round = new Round(document.querySelector('main')!);
         this.newGameButton = <HTMLButtonElement> document.querySelector('.new-game-button');
         this.newGameButton.addEventListener('click', () => {
             this.onNewGameClick();
@@ -14,16 +13,10 @@ class Game {
     }
 
     private onNewGameClick() {
-        this.reset();
-        this.round = new Round(document.querySelector('main')!);
-        this.round.draw();
-        this.round.setPlayMode();
-        this.setMessage('Click on the card you wish to play');
-    }
-
-    private reset() {
-        this.round.newRound();
         this.clearMsg();
+        this.round = new Round(document.querySelector('main')!);
+        this.round.startRound();
+        this.setMessage('Click on the card you wish to play');
     }
 
     public clearMsg(): void {

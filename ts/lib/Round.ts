@@ -1,41 +1,70 @@
 class Round {
-    public readonly deck: Deck;
-    public readonly hand: Hand;
-    public readonly playingArea: PlayingArea;
-    public confirmMoveButton: ConfirmMoveButton;
+    private deck: Deck;
+    private playerHands: Hand[] = [];
+    private currentHand: Hand;
+    private currentTurnIndex: number;
+    private playingArea: PlayingArea;
+    private confirmMoveButton: ConfirmMoveButton;
 
     public constructor (parent: Element) {
+        console.log('building round');
         this.deck = new Deck();
         this.deck.shuffle();
-        this.hand = new Hand(parent, () => this.confirmMoveButton.enable());
-        this.playingArea = new PlayingArea(parent);
         this.confirmMoveButton = new ConfirmMoveButton(parent, () => this.onConfirmMoveClick());
+        this.confirmMoveButton.hide();
+
+        this.playerHands.push(new Hand(parent.querySelector('.playerOne')!, () => this.confirmMoveButton.enable()));
+        this.playerHands.push(new Hand(parent.querySelector('.playerTwo')!, () => this.confirmMoveButton.enable()));
+
+        this.playingArea = new PlayingArea(parent);
+
     }
 
-    public draw (): void {
-        for (let i = 0; i < 4; i++) {
-            this.hand.addCardToHand(this.deck.draw());
-        }
-    }
-
-    public setPlayMode (): void {
-        this.confirmMoveButton.disable();
+    public startRound() {
+        this.clearAllCards();
+        this.draw();
+        this.currentTurnIndex = 0;
+        this.nextTurn();
+        console.log('showing button');
         this.confirmMoveButton.show();
     }
 
-    public setNewTurn(): void {
-        this.hand.enableCards();
+    private draw (): void {
+        this.playerHands.forEach(hand => {
+            for (let i = 0; i < CONSTANTS.handSize; i++) {
+                hand.addCardToHand(this.deck.draw());
+            }
+        })
+    }
+
+    private nextTurn(): void {
+        this.currentTurnIndex++;
+        if (this.currentTurnIndex >= this.playerHands.length) {
+            this.currentTurnIndex = 0;
+        }
+
+        this.currentHand = this.playerHands[this.currentTurnIndex];
+        let otherHands: Hand[] = [];
+
+        this.playerHands.forEach((hand: Hand, index: number) => {
+            if (index !== this.currentTurnIndex) {
+                otherHands.push(hand);
+            }
+        });
+
+        this.currentHand.enableCards();
+        otherHands.forEach((hand: Hand) => hand.disableCards());
         this.confirmMoveButton.disable();
     }
 
-    public newRound() {
+    private onConfirmMoveClick(): void {
         this.playingArea.clear();
-        this.clearCards();
-        this.hand.enableCards();
+        this.playSelectedCards();
+        this.nextTurn();
     }
 
     private playSelectedCards() {
-        this.hand.cardsMap.forEach((uiCard, card) => {
+        this.currentHand.cardsMap.forEach((uiCard, card) => {
             if (uiCard.selected) {
                 this.playCard(card);
             }
@@ -44,17 +73,13 @@ class Round {
 
     private playCard(card: Card) {
         this.playingArea.addCard(card);
-        this.hand.removeCardFromHand(card);
+        this.currentHand.removeCardFromHand(card);
     }
 
-    private onConfirmMoveClick(): void {
-        this.playingArea.clear();
-        this.playSelectedCards();
-        this.setNewTurn();
-    }
-
-    private clearCards() {
-        this.hand.clearCards();
+    private clearAllCards() {
+        this.playerHands.forEach(hand => {
+            hand.clearCards();
+        })
         this.playingArea.clear();
     }
 }

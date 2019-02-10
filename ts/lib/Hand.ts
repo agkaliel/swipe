@@ -1,12 +1,12 @@
 class Hand {
-    private playerHandElement: Element;
+    private element: Element;
     // Change from a map to UICard belongs to Card
     private _cardsMap: Map<Card, UICard>;
     private onCardsSelectedCallback: () => void;
 
-    public constructor (parent, onCardsSelectedCallback: () => void) {
+    public constructor (element: Element, onCardsSelectedCallback: () => void) {
         this.onCardsSelectedCallback = onCardsSelectedCallback;
-        this.playerHandElement = <Element> parent.querySelector('.playerHand');
+        this.element = element;
         this._cardsMap = new Map();
     }
 
@@ -18,7 +18,7 @@ class Hand {
         let u = new UICard(card);
         this._cardsMap.set(card, u);
 
-        this.playerHandElement.appendChild(u.element);
+        this.element.appendChild(u.element);
         this.subscribeToCardClicks(u);
 
         return u;
@@ -75,15 +75,15 @@ class Hand {
         if (!uiCard) {
             throw 'Card not in display';
         }
-        this.playerHandElement.removeChild(uiCard.element);
+        this.element.removeChild(uiCard.element);
         this.cardsMap.delete(card);
     }
 
     public clearCards (): void {
         this._cardsMap = new Map();
 
-        while (this.playerHandElement.firstChild) {
-            this.playerHandElement.removeChild(this.playerHandElement.firstChild);
+        while (this.element.firstChild) {
+            this.element.removeChild(this.element.firstChild);
         }
     }
 }

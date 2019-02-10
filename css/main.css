@@ -2,14 +2,6 @@ main {
   display: inline-flex;
   flex-direction: column; }
 
-.betting {
-  display: flex;
- }
-  
- .betting > * {
-    margin-right: 10px;
- }
-
 .playerHand, 
 .playingArea {
   display: flex;
