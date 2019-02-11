@@ -53,6 +53,9 @@ class Card {
 
         s = this.suitName.charAt(0);
 
+
+        // TODO: Look into changing naming scheme to avoid adblock issues
         return r + s + '.svg';
+
     }
 }
