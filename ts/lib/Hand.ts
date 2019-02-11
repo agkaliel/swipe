@@ -34,38 +34,55 @@ class Hand {
     }
 
     onCardClicked() {
-        let numberOfSelectedCards = 0
+        let selectedCards: UICard[] = []
         this.cardsMap.forEach((c) => {
             if (c.selected) {
-                numberOfSelectedCards++;
+                selectedCards.push(c);
             }
         });
 
-        if (numberOfSelectedCards >= CONSTANTS.maxPlayable) {
+        if (selectedCards.length >= CONSTANTS.maxPlayable) {
             this.disableUnselectedCards();
         } else {
-            this.enableCards();
+            this.setAllowedCards(selectedCards);;
         }
 
-        if (numberOfSelectedCards >= 1) {
+        if (selectedCards.length >= 1) {
             this.onCardsSelectedCallback();
         }
     }
 
-    public enableCards (): void {
+    // TODO: Add rule to disable cards lower than playing area rank
+    private setAllowedCards(selectedCards: UICard[]) {
+        if (selectedCards.length) {
+            let selectedRank: number = selectedCards[0].card.rank;
+            this.cardsMap.forEach((c: UICard) => {
+                if (c.card.rank !== selectedRank) {
+                    c.disabled = true;
+                }
+            } )
+
+        } else {
+            this.enableAllCards();
+        }
+    
+    }
+
+    // TODO: Delete?
+    public enableAllCards (): void {
         this.cardsMap.forEach((c) => {
             c.disabled = false;
         });
     }
 
     public disableCards (): void {
-        this.cardsMap.forEach((c) => {
+        this.cardsMap.forEach((c: UICard) => {
             c.disabled = true;
         });
     }
 
     disableUnselectedCards() {
-        this.cardsMap.forEach((c) => {
+        this.cardsMap.forEach((c: UICard) => {
             if (!c.selected) {
                 c.disabled = true;
             }

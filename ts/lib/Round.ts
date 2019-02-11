@@ -50,7 +50,7 @@ class Round {
             }
         });
 
-        this.currentHand.enableCards();
+        this.currentHand.enableAllCards();
         otherHands.forEach((hand: Hand) => hand.disableCards());
         this.confirmMoveButton.disable();
     }
