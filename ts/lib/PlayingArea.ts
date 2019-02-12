@@ -1,30 +1,38 @@
 class PlayingArea {
     private playingAreaElement: Element;
-    // Change from a map to UICard belongs to Card
-    private _cardsMap: Map<Card, UICard>;
 
+    private _cardSlots: CardSlot[];
     public constructor (parent) {
         this.playingAreaElement = <Element> parent.querySelector('.playingArea');
-        this._cardsMap = new Map();
+        this._cardSlots = [];
+        this._cardSlots.push(new CardSlot(<Element> this.playingAreaElement.querySelector('.slotOne')));
+        this._cardSlots.push(new CardSlot(<Element> this.playingAreaElement.querySelector('.slotTwo')));
+        this._cardSlots.push(new CardSlot(<Element> this.playingAreaElement.querySelector('.slotThree')));
+        this._cardSlots.push(new CardSlot(<Element> this.playingAreaElement.querySelector('.slotFour')));
+
     }
 
     public clear() {
-        this._cardsMap = new Map();
-
-        while (this.playingAreaElement.firstChild) {
-            this.playingAreaElement.removeChild(this.playingAreaElement.firstChild);
-        }
+        console.log('clearing: ');
+        this._cardSlots.forEach((slot: CardSlot) => {
+            console.log('clearing slot');
+            slot.clear();
+        });
     }
 
-    public addCard(card: Card): UICard {
-        let u = new UICard(card);
-        this._cardsMap.set(card, u);
-        this.playingAreaElement.appendChild(u.element);
-        return u;
+    public addCard(card: Card) {
+        this._cardSlots.forEach(cardSlot => {
+            if (!cardSlot.hasCard()) {
+                cardSlot.setCard(card);
+                // TODO: This aint workin
+                return;
+            }
+        });
+
+        throw "Out of room in playing area";
     }
     
     getRank(): number {
-        let firstCard: Card = this._cardsMap.keys().next().value;
-        return firstCard ? firstCard.rank : CONSTANTS.maxRank;;
+        return (this._cardSlots[0] && this._cardSlots[0].card) ?  this._cardSlots[0].card.rank : CONSTANTS.maxRank;
     }
 }
