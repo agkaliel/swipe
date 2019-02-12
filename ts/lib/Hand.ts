@@ -1,11 +1,13 @@
 class Hand {
+    playingArea: PlayingArea
     private element: Element;
     // Change from a map to UICard belongs to Card
     private _cardsMap: Map<Card, UICard>;
     private onCardsSelectedCallback: () => void;
 
-    public constructor (element: Element, onCardsSelectedCallback: () => void) {
+    public constructor (element: Element, onCardsSelectedCallback: () => void, playingArea: PlayingArea) {
         this.onCardsSelectedCallback = onCardsSelectedCallback;
+        this.playingArea = playingArea;
         this.element = element;
         this._cardsMap = new Map();
     }
@@ -52,7 +54,6 @@ class Hand {
         }
     }
 
-    // TODO: Add rule to disable cards lower than playing area rank
     private setAllowedCards(selectedCards: UICard[]) {
         if (selectedCards.length) {
             let selectedRank: number = selectedCards[0].card.rank;
@@ -63,16 +64,30 @@ class Hand {
             } )
 
         } else {
-            this.enableAllCards();
+            this.cardsMap.forEach((c: UICard) => {
+                if (c.card.rank > this.playingArea.getRank()) {
+                    c.disabled = true;
+                } else {
+                    c.disabled = false;
+                }
+            });
         }
-    
     }
 
-    // TODO: Delete?
-    public enableAllCards (): void {
-        this.cardsMap.forEach((c) => {
-            c.disabled = false;
+    public getSelectedRank() {
+        let firstSelectedCard;
+
+        this._cardsMap.forEach((c: UICard, card: Card) => {
+            if (c.selected) {
+                firstSelectedCard = card;
+            }
         });
+
+        if (!firstSelectedCard) {
+            throw "No Cards Selected";
+        }
+
+        return firstSelectedCard.rank;
     }
 
     public disableCards (): void {

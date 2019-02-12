@@ -11,12 +11,17 @@ class Round {
         this.deck.shuffle();
         this.confirmMoveButton = new ConfirmMoveButton(parent, () => this.onConfirmMoveClick());
         this.confirmMoveButton.hide();
-
-        this.playerHands.push(new Hand(parent.querySelector('.playerOne')!, () => this.confirmMoveButton.enable()));
-        this.playerHands.push(new Hand(parent.querySelector('.playerTwo')!, () => this.confirmMoveButton.enable()));
-
         this.playingArea = new PlayingArea(parent);
 
+        this.playerHands.push(new Hand(
+            parent.querySelector('.playerOne')!,
+            () => this.confirmMoveButton.enable(),
+            this.playingArea));
+
+        this.playerHands.push(new Hand(
+            parent.querySelector('.playerTwo')!, 
+            () => this.confirmMoveButton.enable(),
+            this.playingArea));;
     }
 
     public startRound() {
@@ -50,13 +55,16 @@ class Round {
             }
         });
 
-        this.currentHand.enableAllCards();
+        this.currentHand.onCardClicked();
         otherHands.forEach((hand: Hand) => hand.disableCards());
         this.confirmMoveButton.disable();
     }
 
     private onConfirmMoveClick(): void {
-        this.playingArea.clear();
+        console.log('hand: ', this.currentHand.getSelectedRank(), ' area: ', this.playingArea.getRank());
+        if (this.currentHand.getSelectedRank() !== this.playingArea.getRank()) {
+            this.playingArea.clear()
+        }
         this.playSelectedCards();
         this.nextTurn();
     }

@@ -8,7 +8,7 @@ class PlayingArea {
         this._cardsMap = new Map();
     }
 
-    clear() {
+    public clear() {
         this._cardsMap = new Map();
 
         while (this.playingAreaElement.firstChild) {
@@ -16,10 +16,15 @@ class PlayingArea {
         }
     }
 
-    addCard(card: Card): UICard {
+    public addCard(card: Card): UICard {
         let u = new UICard(card);
         this._cardsMap.set(card, u);
         this.playingAreaElement.appendChild(u.element);
         return u;
-    }   
+    }
+    
+    getRank(): number {
+        let firstCard: Card = this._cardsMap.keys().next().value;
+        return firstCard ? firstCard.rank : CONSTANTS.maxRank;;
+    }
 }
