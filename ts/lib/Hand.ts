@@ -55,6 +55,7 @@ class Hand {
     }
 
     private setAllowedCards(selectedCards: UICard[]) {
+        this.enableCards();
         if (selectedCards.length) {
             let selectedRank: number = selectedCards[0].card.rank;
             this.cardsMap.forEach((c: UICard) => {
@@ -88,6 +89,12 @@ class Hand {
         }
 
         return firstSelectedCard.rank;
+    }
+
+    private enableCards(): void {
+        this.cardsMap.forEach((c: UICard) => {
+            c.disabled = false;
+        }); 
     }
 
     public disableCards (): void {

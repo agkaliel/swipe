@@ -34,16 +34,29 @@ class Round {
 
     private draw (): void {
         this.playerHands.forEach(hand => {
+            let cards: Card[] = [];
             for (let i = 0; i < CONSTANTS.handSize; i++) {
-                hand.addCardToHand(this.deck.draw());
+                cards.push(this.deck.draw());
             }
+            cards.sort(this.compareCards);
+            cards.forEach(card => hand.addCardToHand(card));
         })
     }
 
-    private nextTurn(): void {
-        this.currentTurnIndex++;
-        if (this.currentTurnIndex >= this.playerHands.length) {
-            this.currentTurnIndex = 0;
+    private compareCards(a: Card, b: Card) {
+        if (a.rank < b.rank)
+            return -1;
+        if (a.rank > b.rank)
+            return 1;
+        return 0;
+    }
+
+    private nextTurn(samePlayer: boolean = false): void {
+        if (!samePlayer) {
+            this.currentTurnIndex++;
+            if (this.currentTurnIndex >= this.playerHands.length) {
+                this.currentTurnIndex = 0;
+            }
         }
 
         this.currentHand = this.playerHands[this.currentTurnIndex];
@@ -61,12 +74,17 @@ class Round {
     }
 
     private onConfirmMoveClick(): void {
-        console.log('hand: ', this.currentHand.getSelectedRank(), ' area: ', this.playingArea.getRank());
         if (this.currentHand.getSelectedRank() !== this.playingArea.getRank()) {
             this.playingArea.clear()
         }
         this.playSelectedCards();
-        this.nextTurn();
+
+        if (this.playingArea.isFull()) {
+            this.playingArea.clear();
+            this.nextTurn(true);
+        } else {
+            this.nextTurn();
+        }
     }
 
     private playSelectedCards() {
@@ -74,7 +92,7 @@ class Round {
             if (uiCard.selected) {
                 this.playCard(card);
             }
-        })
+        });
     }
 
     private playCard(card: Card) {

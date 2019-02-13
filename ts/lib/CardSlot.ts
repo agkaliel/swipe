@@ -3,7 +3,6 @@ class CardSlot {
     private _uiCard: UICard | void;
 
     public constructor (element: Element) {
-        console.log('element', element);
         this.element = element;
     }
 

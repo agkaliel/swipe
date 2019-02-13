@@ -13,23 +13,23 @@ class PlayingArea {
     }
 
     public clear() {
-        console.log('clearing: ');
         this._cardSlots.forEach((slot: CardSlot) => {
-            console.log('clearing slot');
             slot.clear();
         });
     }
 
-    public addCard(card: Card) {
-        this._cardSlots.forEach(cardSlot => {
-            if (!cardSlot.hasCard()) {
-                cardSlot.setCard(card);
-                // TODO: This aint workin
-                return;
-            }
-        });
+    public isFull(): boolean {
+        let firstEmptySlot = this._cardSlots.find(slot => !slot.hasCard());
+        return !firstEmptySlot;
+    }
 
-        throw "Out of room in playing area";
+    public addCard(card: Card) {
+        let firstEmptySlot = this._cardSlots.find(slot => !slot.hasCard());
+        if (firstEmptySlot) {
+            firstEmptySlot.setCard(card);
+        } else {
+            throw "Out of room in playing area";
+        }
     }
     
     getRank(): number {
