@@ -5,6 +5,7 @@ main {
 .playerHand, 
 .playingArea {
   display: flex;
+  margin: auto;
  }
   
 .playerHand .card,
@@ -33,4 +34,12 @@ main {
 
 .confirm-move-button {
   font-size: 30px;
+}
+
+.playingArea .slot {
+      border-style: solid;
+      border-color: grey;
+      border-width: 1px;
+      height: 170px;
+      width: 120px;
 }
