@@ -18,11 +18,7 @@ class ConfirmMoveButton {
         this.element.hidden = false;
     }
 
-    public enable() {
-        this.element.disabled = false;
-    }
-
-    public disable() {
-        this.element.disabled = true;
+    public setEnabled(isEnabled: boolean) {
+        this.element.disabled = !isEnabled;
     }
 }

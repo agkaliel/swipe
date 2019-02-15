@@ -1,9 +1,9 @@
 class CardSlot {
-    private element: Element;
+    public readonly element: Element = document.createElement('div');
     private _uiCard: UICard | void;
 
-    public constructor (element: Element) {
-        this.element = element;
+    public constructor () {
+        this.element.classList.add('slot');
     }
 
     public clear() {

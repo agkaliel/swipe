@@ -1,17 +1,20 @@
 main {
-  display: inline-flex;
-  flex-direction: column; }
+      display: inline-flex;
+      flex-direction: column; }
 
 .playerHand, 
 .playingArea {
-  display: flex;
-  margin: auto;
+      display: flex;
  }
+
+.playingArea {
+      padding: 10px;
+}
   
 .playerHand .card,
 .playingArea .card {
-    padding: 10px;
-    cursor: pointer;
+      padding: 10px;
+      cursor: pointer;
  }
 
  .playerHand .card img,
@@ -31,9 +34,32 @@ main {
       background-color: rgba(0, 0, 0, 0.4);
       opacity: 0.5;
 }
+button {
+      margin: 10px;
+      padding: 10px;
+      border: none;
+      color: white;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+}
 
 .confirm-move-button {
-  font-size: 30px;
+      background-color: #4CAF50;
+      font-size: 30px;
+      max-width: 400px;
+}
+
+.confirm-move-button:disabled {
+      background-color: rgb(150, 150, 150);
+      font-size: 30px;
+      max-width: 400px;
+}
+
+.new-game-button {
+      background-color: #f44336;
+      font-size: 15px;
+      max-width: 100px;
 }
 
 .playingArea .slot {

@@ -5,11 +5,11 @@ class PlayingArea {
     public constructor (parent) {
         this.playingAreaElement = <Element> parent.querySelector('.playingArea');
         this._cardSlots = [];
-        this._cardSlots.push(new CardSlot(<Element> this.playingAreaElement.querySelector('.slotOne')));
-        this._cardSlots.push(new CardSlot(<Element> this.playingAreaElement.querySelector('.slotTwo')));
-        this._cardSlots.push(new CardSlot(<Element> this.playingAreaElement.querySelector('.slotThree')));
-        this._cardSlots.push(new CardSlot(<Element> this.playingAreaElement.querySelector('.slotFour')));
-
+        for (let i = 0; i < CONSTANTS.playingAreaSize; i++) {
+            let cardSlot = new CardSlot();
+            this.playingAreaElement.appendChild(cardSlot.element);
+            this._cardSlots.push(cardSlot);
+        }
     }
 
     public clear() {
@@ -21,6 +21,16 @@ class PlayingArea {
     public isFull(): boolean {
         let firstEmptySlot = this._cardSlots.find(slot => !slot.hasCard());
         return !firstEmptySlot;
+    }
+
+    public numberOfEmptySlots(): number {
+        let numberEmpty = 0;
+        this._cardSlots.forEach(slot => {
+            if (!slot.hasCard()) {
+                numberEmpty++;
+            }
+        });
+        return numberEmpty;
     }
 
     public addCard(card: Card) {

@@ -3,10 +3,10 @@ class Hand {
     private element: Element;
     // Change from a map to UICard belongs to Card
     private _cardsMap: Map<Card, UICard>;
-    private onCardsSelectedCallback: () => void;
+    private setButtonEnabled: (isEnabled: boolean) => void;
 
-    public constructor (element: Element, onCardsSelectedCallback: () => void, playingArea: PlayingArea) {
-        this.onCardsSelectedCallback = onCardsSelectedCallback;
+    public constructor (element: Element, setButtonEnabled: (isEnabled: boolean) => void, playingArea: PlayingArea) {
+        this.setButtonEnabled = setButtonEnabled;
         this.playingArea = playingArea;
         this.element = element;
         this._cardsMap = new Map();
@@ -49,9 +49,7 @@ class Hand {
             this.setAllowedCards(selectedCards);;
         }
 
-        if (selectedCards.length >= 1) {
-            this.onCardsSelectedCallback();
-        }
+        this.setButtonEnabled(selectedCards.length >= 1);
     }
 
     private setAllowedCards(selectedCards: UICard[]) {
@@ -59,9 +57,12 @@ class Hand {
         if (selectedCards.length) {
             let selectedRank: number = selectedCards[0].card.rank;
             this.cardsMap.forEach((c: UICard) => {
-                if (c.card.rank !== selectedRank) {
-                    c.disabled = true;
+                if (!c.selected) {
+                    if (c.card.rank !== selectedRank || (this.playingArea.numberOfEmptySlots() <= selectedCards.length && selectedRank === this.playingArea.getRank())) {
+                        c.disabled = true;
+                    }
                 }
+
             } )
 
         } else {

@@ -8,6 +8,8 @@ class Game {
         this.newGameButton.addEventListener('click', () => {
             this.onNewGameClick();
         });
+        let confirmMoveButton = <HTMLButtonElement> document.querySelector('.confirm-move-button');
+        confirmMoveButton.hidden = true;
 
         this.msg = <HTMLParagraphElement> document.querySelector('.msg');
     }
@@ -16,7 +18,7 @@ class Game {
         this.clearMsg();
         this.round = new Round(document.querySelector('main')!);
         this.round.startRound();
-        this.setMessage('Click on the card you wish to play');
+        // this.setMessage('Click on the card you wish to play');
     }
 
     public clearMsg(): void {

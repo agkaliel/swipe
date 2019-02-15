@@ -15,12 +15,12 @@ class Round {
 
         this.playerHands.push(new Hand(
             parent.querySelector('.playerOne')!,
-            () => this.confirmMoveButton.enable(),
+            (isEnabled: boolean) => this.confirmMoveButton.setEnabled(isEnabled),
             this.playingArea));
 
         this.playerHands.push(new Hand(
             parent.querySelector('.playerTwo')!, 
-            () => this.confirmMoveButton.enable(),
+            (isEnabled: boolean) => this.confirmMoveButton.setEnabled(isEnabled),
             this.playingArea));;
     }
 
@@ -70,7 +70,7 @@ class Round {
 
         this.currentHand.onCardClicked();
         otherHands.forEach((hand: Hand) => hand.disableCards());
-        this.confirmMoveButton.disable();
+        this.confirmMoveButton.setEnabled(false);
     }
 
     private onConfirmMoveClick(): void {
