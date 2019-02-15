@@ -2,14 +2,26 @@ class PlayingArea {
     private playingAreaElement: Element;
 
     private _cardSlots: CardSlot[];
-    public constructor (parent) {
-        this.playingAreaElement = <Element> parent.querySelector('.playingArea');
+    public constructor () {
+        this.playingAreaElement = <Element> document.querySelector('.playingArea');
         this._cardSlots = [];
         for (let i = 0; i < CONSTANTS.playingAreaSize; i++) {
             let cardSlot = new CardSlot();
             this.playingAreaElement.appendChild(cardSlot.element);
             this._cardSlots.push(cardSlot);
         }
+    }
+
+    public getCards(): Card[] {
+        let cards: Card[] = [];
+
+        this._cardSlots.forEach(slot => {
+            if  (slot.card) {
+                cards.push(slot.card);
+            }
+        });
+        
+        return cards;
     }
 
     public clear() {

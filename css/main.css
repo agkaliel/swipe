@@ -3,7 +3,8 @@ main {
       flex-direction: column; }
 
 .playerHand, 
-.playingArea {
+.playingArea,
+.pickupPile {
       display: flex;
  }
 
@@ -12,13 +13,15 @@ main {
 }
   
 .playerHand .card,
-.playingArea .card {
+.playingArea .card,
+.pickupPile .card {
       padding: 10px;
       cursor: pointer;
  }
 
  .playerHand .card img,
- .playingArea .card img {
+ .playingArea .card img,
+ .pickupPile .card img {
       width: 100px;
 }
 

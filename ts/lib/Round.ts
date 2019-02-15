@@ -4,6 +4,7 @@ class Round {
     private currentHand: Hand;
     private currentTurnIndex: number;
     private playingArea: PlayingArea;
+    private pickupPile: PickupPile;
     private confirmMoveButton: ConfirmMoveButton;
 
     public constructor (parent: Element) {
@@ -11,7 +12,8 @@ class Round {
         this.deck.shuffle();
         this.confirmMoveButton = new ConfirmMoveButton(parent, () => this.onConfirmMoveClick());
         this.confirmMoveButton.hide();
-        this.playingArea = new PlayingArea(parent);
+        this.playingArea = new PlayingArea();
+        this.pickupPile = new PickupPile();
 
         this.playerHands.push(new Hand(
             parent.querySelector('.playerOne')!,
@@ -75,6 +77,8 @@ class Round {
 
     private onConfirmMoveClick(): void {
         if (this.currentHand.getSelectedRank() !== this.playingArea.getRank()) {
+            let cardsInPlayingArea = this.playingArea.getCards();
+            this.pickupPile.addCards(cardsInPlayingArea);
             this.playingArea.clear()
         }
         this.playSelectedCards();
@@ -105,5 +109,6 @@ class Round {
             hand.clearCards();
         })
         this.playingArea.clear();
+        this.pickupPile.clearCards();
     }
 }
