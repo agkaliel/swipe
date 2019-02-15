@@ -6,7 +6,7 @@ class Deck {
         let numberOfDecks = 5;
         for (let deckNumber = 0; deckNumber < numberOfDecks; deckNumber++) {
             for (let s = 0; s < 4; s++) {
-                for (let r = 1; r <= 4; r++) {
+                for (let r = 1; r <= 13; r++) {
                     this.cards.push(new Card(r, s));
                 }
             }
