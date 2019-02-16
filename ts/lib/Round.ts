@@ -71,7 +71,7 @@ class Round {
             }
         });
 
-        this.currentHand.updateCardAvailability();
+        this.currentHand.enable();
 
         // If a player doesn't have an available move, they pickup the pickup pile and lose their turn
         if (!this.currentHand.hasAvailableMove()) {
@@ -82,7 +82,7 @@ class Round {
             this.playingArea.clear();
             this.setupNextTurn();
         } else {
-            otherHands.forEach((hand: Hand) => hand.disableCards());
+            otherHands.forEach((hand: Hand) => hand.disable());
             this.confirmMoveButton.setEnabled(false);
         }
     }

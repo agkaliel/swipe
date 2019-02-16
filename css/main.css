@@ -32,6 +32,11 @@ main {
       width: 100px;
 }
 
+.playerHand.isActive {
+      border-style: solid;
+      border-color: #0f0;
+}
+
 .playerHand .card.selected {
       background-color: #0f0;
 }

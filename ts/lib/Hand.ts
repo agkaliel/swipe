@@ -69,6 +69,16 @@ class Hand {
         this.updateCardAvailability();
     }
 
+    public enable() {
+        this.element.classList.add('isActive');
+        this.updateCardAvailability();
+    }
+
+    public disable() {
+        this.element.classList.remove('isActive');
+        this.disableCards()
+    }
+
     updateCardAvailability() {
         this.enableCards();
         let selectedCards: UICard[] = []
@@ -133,7 +143,7 @@ class Hand {
         }); 
     }
 
-    public disableCards (): void {
+    private disableCards (): void {
         this.cardsMap.forEach((c: UICard) => {
             c.disabled = true;
         });
