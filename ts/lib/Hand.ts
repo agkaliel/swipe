@@ -16,7 +16,17 @@ class Hand {
         return this._cardsMap;
     }
 
-    public addCardToHand (card: Card): UICard {
+    public addCards(cards: Card[]) {
+        let allCards = [...this.cards, ...cards];
+        allCards.sort(Round.compareCards);
+        this.clear();
+
+        allCards.forEach(card => {
+            this.addCardToHand(card)
+        });
+    }
+
+    private addCardToHand (card: Card): UICard {
         let u = new UICard(card);
         this._cardsMap.set(card, u);
 
@@ -25,6 +35,16 @@ class Hand {
 
         return u;
     }
+
+    private get cards(): Card[] {
+        let cards: Card[] = [];
+        this._cardsMap.forEach((uiCard: UICard, card: Card) => {
+            cards.push(card);
+        });
+        return cards;
+    }
+
+
 
     subscribeToCardClicks(uiCard: UICard) {
         uiCard.element.addEventListener('click', () => {
@@ -35,7 +55,22 @@ class Hand {
         });
     }
 
+    public hasAvailableMove(): boolean {
+        let enabledCard: UICard | null = null;
+        this.cardsMap.forEach((c: UICard) => {
+            if (!c.disabled) {
+                enabledCard = c;
+            }
+        });
+        return !!enabledCard;
+    }
+
     onCardClicked() {
+        this.updateCardAvailability();
+    }
+
+    updateCardAvailability() {
+        this.enableCards();
         let selectedCards: UICard[] = []
         this.cardsMap.forEach((c) => {
             if (c.selected) {
@@ -43,17 +78,17 @@ class Hand {
             }
         });
 
+
         if (selectedCards.length >= CONSTANTS.maxPlayable) {
             this.disableUnselectedCards();
         } else {
-            this.setAllowedCards(selectedCards);;
+            this.disableIllegalCards(selectedCards);;
         }
 
         this.setButtonEnabled(selectedCards.length >= 1);
     }
 
-    private setAllowedCards(selectedCards: UICard[]) {
-        this.enableCards();
+    private disableIllegalCards(selectedCards: UICard[]) {
         if (selectedCards.length) {
             let selectedRank: number = selectedCards[0].card.rank;
             this.cardsMap.forEach((c: UICard) => {
@@ -121,7 +156,7 @@ class Hand {
         this.cardsMap.delete(card);
     }
 
-    public clearCards (): void {
+    public clear (): void {
         this._cardsMap = new Map();
 
         while (this.element.firstChild) {

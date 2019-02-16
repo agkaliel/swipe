@@ -4,6 +4,11 @@ class PlayingArea {
     private _cardSlots: CardSlot[];
     public constructor () {
         this.playingAreaElement = <Element> document.querySelector('.playingArea');
+
+        while (this.playingAreaElement.firstChild) {
+            this.playingAreaElement.firstChild.remove();
+        }
+
         this._cardSlots = [];
         for (let i = 0; i < CONSTANTS.playingAreaSize; i++) {
             let cardSlot = new CardSlot();
@@ -12,7 +17,7 @@ class PlayingArea {
         }
     }
 
-    public getCards(): Card[] {
+    public get cards(): Card[] {
         let cards: Card[] = [];
 
         this._cardSlots.forEach(slot => {

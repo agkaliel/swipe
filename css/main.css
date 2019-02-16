@@ -1,6 +1,7 @@
 main {
       display: inline-flex;
-      flex-direction: column; }
+      flex-direction: column;
+ }
 
 .playerHand, 
 .playingArea,
@@ -8,7 +9,13 @@ main {
       display: flex;
  }
 
-.playingArea {
+ .commonAreaWrapper {
+       display: flex;
+ }
+
+
+.playingArea,
+.pickupPile {
       padding: 10px;
 }
   

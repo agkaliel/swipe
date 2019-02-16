@@ -4,12 +4,20 @@ class PickupPile {
 
     public constructor () {}
 
-    public clearCards(): void {
+    public clear(): void {
         this._cardsMap = new Map();
 
         while (this.element.firstChild) {
             this.element.removeChild(this.element.firstChild);
         }
+    }
+
+    public get cards(): Card[] {
+        let cards: Card[] = [];
+        this._cardsMap.forEach((uiCard: UICard, card: Card) => {
+            cards.push(card);
+        });
+        return cards;
     }
 
     public addCards(cards: Card[]) {

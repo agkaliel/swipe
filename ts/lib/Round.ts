@@ -30,7 +30,7 @@ class Round {
         this.clearAllCards();
         this.draw();
         this.currentTurnIndex = 0;
-        this.nextTurn();
+        this.setupNextTurn();
         this.confirmMoveButton.show();
     }
 
@@ -40,12 +40,13 @@ class Round {
             for (let i = 0; i < CONSTANTS.handSize; i++) {
                 cards.push(this.deck.draw());
             }
-            cards.sort(this.compareCards);
-            cards.forEach(card => hand.addCardToHand(card));
+
+            hand.addCards(cards);
+            cards.sort(Round.compareCards);
         })
     }
 
-    private compareCards(a: Card, b: Card) {
+    public static compareCards(a: Card, b: Card) {
         if (a.rank < b.rank)
             return -1;
         if (a.rank > b.rank)
@@ -53,8 +54,8 @@ class Round {
         return 0;
     }
 
-    private nextTurn(samePlayer: boolean = false): void {
-        if (!samePlayer) {
+    private setupNextTurn(repeatTurn: boolean = false): void {
+        if (!repeatTurn) {
             this.currentTurnIndex++;
             if (this.currentTurnIndex >= this.playerHands.length) {
                 this.currentTurnIndex = 0;
@@ -70,14 +71,25 @@ class Round {
             }
         });
 
-        this.currentHand.onCardClicked();
-        otherHands.forEach((hand: Hand) => hand.disableCards());
-        this.confirmMoveButton.setEnabled(false);
+        this.currentHand.updateCardAvailability();
+
+        // If a player doesn't have an available move, they pickup the pickup pile and lose their turn
+        if (!this.currentHand.hasAvailableMove()) {
+            this.currentHand.addCards(this.pickupPile.cards);
+            this.currentHand.addCards(this.playingArea.cards);
+
+            this.pickupPile.clear();
+            this.playingArea.clear();
+            this.setupNextTurn();
+        } else {
+            otherHands.forEach((hand: Hand) => hand.disableCards());
+            this.confirmMoveButton.setEnabled(false);
+        }
     }
 
     private onConfirmMoveClick(): void {
         if (this.currentHand.getSelectedRank() !== this.playingArea.getRank()) {
-            let cardsInPlayingArea = this.playingArea.getCards();
+            let cardsInPlayingArea = this.playingArea.cards;
             this.pickupPile.addCards(cardsInPlayingArea);
             this.playingArea.clear()
         }
@@ -85,9 +97,9 @@ class Round {
 
         if (this.playingArea.isFull()) {
             this.playingArea.clear();
-            this.nextTurn(true);
+            this.setupNextTurn(true);
         } else {
-            this.nextTurn();
+            this.setupNextTurn();
         }
     }
 
@@ -106,9 +118,10 @@ class Round {
 
     private clearAllCards() {
         this.playerHands.forEach(hand => {
-            hand.clearCards();
+            hand.clear();
         })
+
         this.playingArea.clear();
-        this.pickupPile.clearCards();
+        this.pickupPile.clear();
     }
 }
