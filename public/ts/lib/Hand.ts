@@ -66,6 +66,7 @@ class Hand {
     }
 
     onCardClicked() {
+        let socket = io();
         this.updateCardAvailability();
     }
 

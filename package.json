@@ -1,0 +1,10 @@
+{
+    "name": "swipe",
+    "version": "0.0.1",
+    "description": "Swipe card game",
+    "dependencies": {
+        "express": "^4.16.4",
+        "socket.io": "^2.2.0",
+        "socketio": "^1.0.0"
+    }
+}

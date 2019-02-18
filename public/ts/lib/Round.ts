@@ -88,6 +88,10 @@ class Round {
     }
 
     private onConfirmMoveClick(): void {
+        console.log('move confirmed');
+        let socket = io();
+        socket.emit('chat message', 'move confirmed');
+
         if (this.currentHand.getSelectedRank() !== this.playingArea.getRank()) {
             let cardsInPlayingArea = this.playingArea.cards;
             this.pickupPile.addCards(cardsInPlayingArea);
