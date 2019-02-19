@@ -2,9 +2,16 @@
     "name": "swipe",
     "version": "0.0.1",
     "description": "Swipe card game",
+    "main": "app.js",
     "dependencies": {
+        "@types/node": "^11.9.4",
         "express": "^4.16.4",
         "socket.io": "^2.2.0",
-        "socketio": "^1.0.0"
+        "socketio": "^1.0.0",
+        "typescript": "^3.3.3"
+    },
+    "scripts": {
+        "tsc": "tsc",
+        "prod": "tsc && node ./build/app.js"
     }
 }

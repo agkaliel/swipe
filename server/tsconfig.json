@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "outDir": "./build",
+        "target": "es6",
+        "noImplicitThis": true,
+        "strictNullChecks": true,
+        "sourceMap": true
+    },
+    "include": [
+        "./ts/lib/**.ts",
+        "./ts/**.ts"
+    ]
+}
