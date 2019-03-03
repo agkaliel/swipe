@@ -1,4 +1,5 @@
 class Round {
+    public socket = io();
     private deck: Deck;
     private playerHands: Hand[] = [];
     private currentHand: Hand;
@@ -6,8 +7,10 @@ class Round {
     private playingArea: PlayingArea;
     private pickupPile: PickupPile;
     private confirmMoveButton: ConfirmMoveButton;
-
     public constructor (parent: Element) {
+        this.socket.on('chat message', (msg) => {
+            console.log('message revieved: ', msg);
+        });
         this.deck = new Deck();
         this.deck.shuffle();
         this.confirmMoveButton = new ConfirmMoveButton(parent, () => this.onConfirmMoveClick());
@@ -88,9 +91,8 @@ class Round {
     }
 
     private onConfirmMoveClick(): void {
-        console.log('move confirmed');
-        let socket = io();
-        socket.emit('chat message', 'move confirmed');
+        this.socket.emit('chat message', 'move confirmed');
+
 
         if (this.currentHand.getSelectedRank() !== this.playingArea.getRank()) {
             let cardsInPlayingArea = this.playingArea.cards;

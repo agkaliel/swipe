@@ -4,6 +4,6 @@ export class TestClass {
     }
 
     doTheThing() {
-        console.log('success');
+        console.log('works');
     }
 }

@@ -184,7 +184,6 @@ class Hand {
         return !!enabledCard;
     }
     onCardClicked() {
-        let socket = io();
         this.updateCardAvailability();
     }
     enable() {
@@ -362,7 +361,11 @@ class PlayingArea {
 }
 class Round {
     constructor(parent) {
+        this.socket = io();
         this.playerHands = [];
+        this.socket.on('chat message', (msg) => {
+            console.log('message revieved: ', msg);
+        });
         this.deck = new Deck();
         this.deck.shuffle();
         this.confirmMoveButton = new ConfirmMoveButton(parent, () => this.onConfirmMoveClick());
@@ -426,9 +429,7 @@ class Round {
         }
     }
     onConfirmMoveClick() {
-        console.log('move confirmed');
-        let socket = io();
-        socket.emit('chat message', 'move confirmed');
+        this.socket.emit('chat message', 'move confirmed');
         if (this.currentHand.getSelectedRank() !== this.playingArea.getRank()) {
             let cardsInPlayingArea = this.playingArea.cards;
             this.pickupPile.addCards(cardsInPlayingArea);
