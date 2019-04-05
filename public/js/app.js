@@ -112,26 +112,106 @@ class Deck {
     }
 }
 class Game {
-    constructor() {
-        this.newGameButton = document.querySelector('.new-game-button');
-        this.newGameButton.addEventListener('click', () => {
-            this.onNewGameClick();
+    constructor(parent) {
+        this.socket = io();
+        this.playerHands = [];
+        this.socket.on('chat message', (msg) => {
+            console.log('message revieved: ', msg);
         });
-        let confirmMoveButton = document.querySelector('.confirm-move-button');
-        confirmMoveButton.hidden = true;
-        this.msg = document.querySelector('.msg');
+        this.deck = new Deck();
+        this.deck.shuffle();
+        this.confirmMoveButton = new ConfirmMoveButton(parent, () => this.onConfirmMoveClick());
+        this.confirmMoveButton.hide();
+        this.playingArea = new PlayingArea();
+        this.pickupPile = new PickupPile();
+        this.playerHands.push(new Hand(parent.querySelector('.playerOne'), (isEnabled) => this.confirmMoveButton.setEnabled(isEnabled), this.playingArea));
+        this.playerHands.push(new Hand(parent.querySelector('.playerTwo'), (isEnabled) => this.confirmMoveButton.setEnabled(isEnabled), this.playingArea));
+        ;
     }
-    onNewGameClick() {
-        this.clearMsg();
-        this.round = new Round(document.querySelector('main'));
-        this.round.startRound();
-        // this.setMessage('Click on the card you wish to play');
+    startRound() {
+        this.clearAllCards();
+        this.draw();
+        this.currentTurnIndex = 0;
+        this.setupNextTurn();
+        this.confirmMoveButton.show();
     }
-    clearMsg() {
-        this.msg.innerHTML = '';
+    draw() {
+        this.playerHands.forEach(hand => {
+            let cards = [];
+            for (let i = 0; i < CONSTANTS.handSize; i++) {
+                cards.push(this.deck.draw());
+            }
+            hand.addCards(cards);
+            cards.sort(Game.compareCards);
+        });
     }
-    setMessage(str) {
-        this.msg.innerHTML += str + '<br>';
+    static compareCards(a, b) {
+        if (a.rank < b.rank)
+            return -1;
+        if (a.rank > b.rank)
+            return 1;
+        return 0;
+    }
+    setupNextTurn(repeatTurn = false) {
+        if (!repeatTurn) {
+            this.currentTurnIndex++;
+            if (this.currentTurnIndex >= this.playerHands.length) {
+                this.currentTurnIndex = 0;
+            }
+        }
+        this.currentHand = this.playerHands[this.currentTurnIndex];
+        let otherHands = [];
+        this.playerHands.forEach((hand, index) => {
+            if (index !== this.currentTurnIndex) {
+                otherHands.push(hand);
+            }
+        });
+        this.currentHand.enable();
+        // If a player doesn't have an available move, they pickup the pickup pile and lose their turn
+        if (!this.currentHand.hasAvailableMove()) {
+            this.currentHand.addCards(this.pickupPile.cards);
+            this.currentHand.addCards(this.playingArea.cards);
+            this.pickupPile.clear();
+            this.playingArea.clear();
+            this.setupNextTurn();
+        }
+        else {
+            otherHands.forEach((hand) => hand.disable());
+            this.confirmMoveButton.setEnabled(false);
+        }
+    }
+    onConfirmMoveClick() {
+        if (this.currentHand.getSelectedRank() !== this.playingArea.getRank()) {
+            let cardsInPlayingArea = this.playingArea.cards;
+            this.pickupPile.addCards(cardsInPlayingArea);
+            this.playingArea.clear();
+        }
+        this.playSelectedCards();
+        if (this.playingArea.isFull()) {
+            this.playingArea.clear();
+            this.setupNextTurn(true);
+        }
+        else {
+            this.setupNextTurn();
+        }
+    }
+    playSelectedCards() {
+        this.currentHand.cardsMap.forEach((uiCard, card) => {
+            if (uiCard.selected) {
+                this.playCard(card);
+            }
+        });
+    }
+    playCard(card) {
+        this.playingArea.addCard(card);
+        this.currentHand.removeCardFromHand(card);
+    }
+    clearAllCards() {
+        this.playerHands.forEach(hand => {
+            hand.clear();
+        });
+        this.playingArea.clear();
+        this.pickupPile.clear();
     }
 }
 class Hand {
@@ -146,7 +226,7 @@ class Hand {
     }
     addCards(cards) {
         let allCards = [...this.cards, ...cards];
-        allCards.sort(Round.compareCards);
+        allCards.sort(Game.compareCards);
         this.clear();
         allCards.forEach(card => {
             this.addCardToHand(card);
@@ -277,6 +357,44 @@ class Hand {
         }
     }
 }
+class Menu {
+    constructor() {
+        this.userRegistrationElement = document.querySelector('.user-registration');
+        this.usernameInput = document.querySelector('.user-name');
+        this.usernameConfirmButton = document.querySelector('.confirm-username-button');
+        this.usernameConfirmButton.addEventListener('click', () => {
+            this.onConfirmUsernameClick();
+        });
+        this.newGameButton = document.querySelector('.new-game-button');
+        this.newGameButton.hidden = true;
+        this.newGameButton.addEventListener('click', () => {
+            this.onNewGameClick();
+        });
+        let confirmMoveButton = document.querySelector('.confirm-move-button');
+        confirmMoveButton.hidden = true;
+        this.msg = document.querySelector('.msg');
+    }
+    onNewGameClick() {
+        this.clearMsg();
+        this.round = new Game(document.querySelector('main'));
+        this.round.startRound();
+        // this.setMessage('Click on the card you wish to play');
+    }
+    onConfirmUsernameClick() {
+        if (this.usernameInput.value.length) {
+            let socket = io();
+            socket.emit('user registration', this.usernameInput.value);
+            this.userRegistrationElement.hidden = true;
+            this.newGameButton.hidden = false;
+        }
+    }
+    clearMsg() {
+        this.msg.innerHTML = '';
+    }
+    setMessage(str) {
+        this.msg.innerHTML += str + '<br>';
+    }
+}
 class PickupPile {
     constructor() {
         this.element = document.querySelector('.pickupPile');
@@ -359,110 +477,6 @@ class PlayingArea {
         return (this._cardSlots[0] && this._cardSlots[0].card) ? this._cardSlots[0].card.rank : CONSTANTS.maxRank;
     }
 }
-class Round {
-    constructor(parent) {
-        this.socket = io();
-        this.playerHands = [];
-        this.socket.on('chat message', (msg) => {
-            console.log('message revieved: ', msg);
-        });
-        this.deck = new Deck();
-        this.deck.shuffle();
-        this.confirmMoveButton = new ConfirmMoveButton(parent, () => this.onConfirmMoveClick());
-        this.confirmMoveButton.hide();
-        this.playingArea = new PlayingArea();
-        this.pickupPile = new PickupPile();
-        this.playerHands.push(new Hand(parent.querySelector('.playerOne'), (isEnabled) => this.confirmMoveButton.setEnabled(isEnabled), this.playingArea));
-        this.playerHands.push(new Hand(parent.querySelector('.playerTwo'), (isEnabled) => this.confirmMoveButton.setEnabled(isEnabled), this.playingArea));
-        ;
-    }
-    startRound() {
-        this.clearAllCards();
-        this.draw();
-        this.currentTurnIndex = 0;
-        this.setupNextTurn();
-        this.confirmMoveButton.show();
-    }
-    draw() {
-        this.playerHands.forEach(hand => {
-            let cards = [];
-            for (let i = 0; i < CONSTANTS.handSize; i++) {
-                cards.push(this.deck.draw());
-            }
-            hand.addCards(cards);
-            cards.sort(Round.compareCards);
-        });
-    }
-    static compareCards(a, b) {
-        if (a.rank < b.rank)
-            return -1;
-        if (a.rank > b.rank)
-            return 1;
-        return 0;
-    }
-    setupNextTurn(repeatTurn = false) {
-        if (!repeatTurn) {
-            this.currentTurnIndex++;
-            if (this.currentTurnIndex >= this.playerHands.length) {
-                this.currentTurnIndex = 0;
-            }
-        }
-        this.currentHand = this.playerHands[this.currentTurnIndex];
-        let otherHands = [];
-        this.playerHands.forEach((hand, index) => {
-            if (index !== this.currentTurnIndex) {
-                otherHands.push(hand);
-            }
-        });
-        this.currentHand.enable();
-        // If a player doesn't have an available move, they pickup the pickup pile and lose their turn
-        if (!this.currentHand.hasAvailableMove()) {
-            this.currentHand.addCards(this.pickupPile.cards);
-            this.currentHand.addCards(this.playingArea.cards);
-            this.pickupPile.clear();
-            this.playingArea.clear();
-            this.setupNextTurn();
-        }
-        else {
-            otherHands.forEach((hand) => hand.disable());
-            this.confirmMoveButton.setEnabled(false);
-        }
-    }
-    onConfirmMoveClick() {
-        this.socket.emit('chat message', 'move confirmed');
-        if (this.currentHand.getSelectedRank() !== this.playingArea.getRank()) {
-            let cardsInPlayingArea = this.playingArea.cards;
-            this.pickupPile.addCards(cardsInPlayingArea);
-            this.playingArea.clear();
-        }
-        this.playSelectedCards();
-        if (this.playingArea.isFull()) {
-            this.playingArea.clear();
-            this.setupNextTurn(true);
-        }
-        else {
-            this.setupNextTurn();
-        }
-    }
-    playSelectedCards() {
-        this.currentHand.cardsMap.forEach((uiCard, card) => {
-            if (uiCard.selected) {
-                this.playCard(card);
-            }
-        });
-    }
-    playCard(card) {
-        this.playingArea.addCard(card);
-        this.currentHand.removeCardFromHand(card);
-    }
-    clearAllCards() {
-        this.playerHands.forEach(hand => {
-            hand.clear();
-        });
-        this.playingArea.clear();
-        this.pickupPile.clear();
-    }
-}
 class UICard {
     constructor(card) {
         this.element = document.createElement('div');
@@ -500,5 +514,5 @@ const CONSTANTS = {
     maxRank: 100,
     playingAreaSize: 4
 };
-new Game();
+new Menu();
 //# sourceMappingURL=app.js.map

@@ -3,7 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var TestClass = /** @class */ (function () {
     function TestClass() {
     }
-    TestClass.prototype.doTheThing = function () {
+    TestClass.prototype.doTheThing = function (socket) {
+        console.log('socket id: ', socket.id);
         console.log('works');
     };
     return TestClass;

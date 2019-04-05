@@ -18,7 +18,7 @@ class Hand {
 
     public addCards(cards: Card[]) {
         let allCards = [...this.cards, ...cards];
-        allCards.sort(Round.compareCards);
+        allCards.sort(Game.compareCards);
         this.clear();
 
         allCards.forEach(card => {

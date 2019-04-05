@@ -2,8 +2,12 @@
 
 npm install typscript -g
 
-tsc --watch
+tsc --watch (in server and public seperately)
 
-npm install http-server
+in /server:
 
-http-server
+npm install
+
+npm run prod
+
+
