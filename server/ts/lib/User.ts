@@ -1,9 +1,9 @@
 export class User {
-    socket: any
+    socket: any;
     username: string;
     
-    constructor(socket) {
-        this.socket = socket
+    constructor(socket, username) {
+        this.socket = socket;
+        this.username = username;
     }
-
 }

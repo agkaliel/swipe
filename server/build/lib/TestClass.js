@@ -10,4 +10,4 @@ var TestClass = /** @class */ (function () {
     return TestClass;
 }());
 exports.TestClass = TestClass;
-//# sourceMappingURL=TestClass.js.map
+//# sourceMappingURL=Controller.js.map

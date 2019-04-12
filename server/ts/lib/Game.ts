@@ -1,7 +1,7 @@
 import {User} from './User';
 
 export class Game {
-    hostUser: User
+    hostUser: User;
     player2: User;
 
     constructor(hostUser: User) {

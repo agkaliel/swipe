@@ -1,11 +1,13 @@
+import {User} from "./lib/User";
+
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var port = process.env.PORT || 3000;
 var path = require('path');
-import {TestClass} from './lib/TestClass';
-var testClass = new TestClass();
+import {Controller} from './lib/Controller';
+var controller = new Controller();
 // TODO: Figure out this import (typings?)
 app.use(express.static(path.join(__dirname, '../../public')));
 
@@ -16,13 +18,21 @@ app.get('/', function(req, res){
 io.on('connection', function(socket){
   console.log('user connected');
   socket.on('chat message', function(msg){
-    testClass.doTheThing(socket);
     console.log('broadcasting: ', msg);
     io.emit('chat message', msg);
   });
 
   socket.on('disconnect', function() {
     console.log('disconnected');
+  });
+
+  socket.on('user registration', function(username: string) {
+      let user = new User(socket, username);
+      controller.addUserToQueue(user);
+      io.emit('add user', {
+        socketId: socket.id,
+        username: user.username
+      });
   })
 });
 
