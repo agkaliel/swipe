@@ -1,5 +1,4 @@
 class Game {
-    public socket = io();
     private deck: Deck;
     private playerHands: Hand[] = [];
     private currentHand: Hand;
@@ -8,9 +7,6 @@ class Game {
     private pickupPile: PickupPile;
     private confirmMoveButton: ConfirmMoveButton;
     public constructor (parent: Element) {
-        this.socket.on('chat message', (msg) => {
-            console.log('message revieved: ', msg);
-        });
         this.deck = new Deck();
         this.deck.shuffle();
         this.confirmMoveButton = new ConfirmMoveButton(parent, () => this.onConfirmMoveClick());
@@ -26,7 +22,7 @@ class Game {
         this.playerHands.push(new Hand(
             parent.querySelector('.playerTwo')!, 
             (isEnabled: boolean) => this.confirmMoveButton.setEnabled(isEnabled),
-            this.playingArea));;
+            this.playingArea));
     }
 
     public startRound() {
@@ -122,7 +118,7 @@ class Game {
     private clearAllCards() {
         this.playerHands.forEach(hand => {
             hand.clear();
-        })
+        });
 
         this.playingArea.clear();
         this.pickupPile.clear();

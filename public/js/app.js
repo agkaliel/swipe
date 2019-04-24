@@ -113,11 +113,7 @@ class Deck {
 }
 class Game {
     constructor(parent) {
-        this.socket = io();
         this.playerHands = [];
-        this.socket.on('chat message', (msg) => {
-            console.log('message revieved: ', msg);
-        });
         this.deck = new Deck();
         this.deck.shuffle();
         this.confirmMoveButton = new ConfirmMoveButton(parent, () => this.onConfirmMoveClick());
@@ -126,7 +122,6 @@ class Game {
         this.pickupPile = new PickupPile();
         this.playerHands.push(new Hand(parent.querySelector('.playerOne'), (isEnabled) => this.confirmMoveButton.setEnabled(isEnabled), this.playingArea));
         this.playerHands.push(new Hand(parent.querySelector('.playerTwo'), (isEnabled) => this.confirmMoveButton.setEnabled(isEnabled), this.playingArea));
-        ;
     }
     startRound() {
         this.clearAllCards();
@@ -359,6 +354,8 @@ class Hand {
 }
 class Menu {
     constructor() {
+        this.socket = io();
+        this.userQueue = [];
         this.userRegistrationElement = document.querySelector('.user-registration');
         this.usernameInput = document.querySelector('.user-name');
         this.usernameConfirmButton = document.querySelector('.confirm-username-button');
@@ -373,6 +370,14 @@ class Menu {
         let confirmMoveButton = document.querySelector('.confirm-move-button');
         confirmMoveButton.hidden = true;
         this.msg = document.querySelector('.msg');
+        this.setupSocket();
+    }
+    setupSocket() {
+        this.socket.on('add user', (userData) => {
+            console.log('adding user: ', userData);
+            // TODO: Show new users on page, add 'invite to match' option
+            this.userQueue.push(new User(userData.socketId, userData.username));
+        });
     }
     onNewGameClick() {
         this.clearMsg();
@@ -382,8 +387,7 @@ class Menu {
     }
     onConfirmUsernameClick() {
         if (this.usernameInput.value.length) {
-            let socket = io();
-            socket.emit('user registration', this.usernameInput.value);
+            this.socket.emit('user registration', this.usernameInput.value);
             this.userRegistrationElement.hidden = true;
             this.newGameButton.hidden = false;
         }
@@ -506,6 +510,12 @@ class UICard {
         if (!this.disabled) {
             this.selected = !this.selected;
         }
+    }
+}
+class User {
+    constructor(socketId, username) {
+        this.socketId = socketId;
+        this.username = username;
     }
 }
 const CONSTANTS = {
