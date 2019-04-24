@@ -357,6 +357,7 @@ class Menu {
         this.socket = io();
         this.userQueue = [];
         this.userRegistrationElement = document.querySelector('.user-registration');
+        this.userQueueElement = document.querySelector('.user-queue');
         this.usernameInput = document.querySelector('.user-name');
         this.usernameConfirmButton = document.querySelector('.confirm-username-button');
         this.usernameConfirmButton.addEventListener('click', () => {
@@ -375,7 +376,10 @@ class Menu {
     setupSocket() {
         this.socket.on('add user', (userData) => {
             console.log('adding user: ', userData);
-            // TODO: Show new users on page, add 'invite to match' option
+            let usernameElement = document.createElement('div');
+            usernameElement.innerText = userData.userame;
+            console.log('usernameElement: ', usernameElement);
+            this.userQueueElement.appendChild(usernameElement);
             this.userQueue.push(new User(userData.socketId, userData.username));
         });
     }

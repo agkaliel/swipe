@@ -4,6 +4,7 @@ class Menu {
     private userQueue: User[] = [];
     public readonly newGameButton: HTMLButtonElement;
     public readonly userRegistrationElement: HTMLElement;
+    public readonly userQueueElement: HTMLElement;
     public readonly usernameConfirmButton: HTMLButtonElement;
     public readonly usernameInput: HTMLInputElement;
 
@@ -11,6 +12,7 @@ class Menu {
 
     public constructor() {
         this.userRegistrationElement = <HTMLElement> document.querySelector('.user-registration');
+        this.userQueueElement = <HTMLElement> document.querySelector('.user-queue');
         this.usernameInput = <HTMLInputElement> document.querySelector('.user-name');
         this.usernameConfirmButton = <HTMLButtonElement> document.querySelector('.confirm-username-button');
         this.usernameConfirmButton.addEventListener('click', () => {
@@ -33,7 +35,10 @@ class Menu {
     private setupSocket() {
         this.socket.on('add user', (userData) => {
             console.log('adding user: ', userData);
-            // TODO: Show new users on page, add 'invite to match' option
+            let usernameElement: HTMLElement = document.createElement('div');
+            usernameElement.innerText = userData.userame;
+            console.log('usernameElement: ', usernameElement);
+            this.userQueueElement.appendChild(usernameElement);
             this.userQueue.push(new User(userData.socketId, userData.username));
         });
     }
