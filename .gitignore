@@ -1,5 +1,8 @@
 .idea/
 node_modules/
 
-client/node_modules
-client/js/
+public/node_modules
+public/js/
+
+server/node_modules
+server/js/
