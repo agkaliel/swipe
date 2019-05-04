@@ -8,6 +8,13 @@ export class Controller {
 
     addUserToQueue(user: User) {
         this.userQueue.push(user);
-        console.log('userQueue: ', this.userQueue);
+        console.log('userQueue: ');
+        this.userQueue.forEach(user => console.log('name: ', user.username));
+    }
+
+    removeUserFromQueue(socket) {
+        console.log('removing, id: ', socket.id);
+
+
     }
 }

@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var User = /** @class */ (function () {
-    function User(socket, username) {
-        this.socket = socket;
+    function User(socketId, username) {
+        this.socketId = socketId;
         this.username = username;
     }
     return User;

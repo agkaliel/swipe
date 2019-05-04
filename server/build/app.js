@@ -21,10 +21,11 @@ io.on('connection', function (socket) {
         io.emit('chat message', msg);
     });
     socket.on('disconnect', function () {
+        controller.removeUserFromQueue(socket.id);
         console.log('disconnected');
     });
     socket.on('user registration', function (username) {
-        var user = new User_1.User(socket, username);
+        var user = new User_1.User(socket.id, username);
         controller.addUserToQueue(user);
         io.emit('add user', {
             socketId: socket.id,

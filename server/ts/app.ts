@@ -23,11 +23,12 @@ io.on('connection', function(socket){
   });
 
   socket.on('disconnect', function() {
+    controller.removeUserFromQueue(socket.id);
     console.log('disconnected');
   });
 
   socket.on('user registration', function(username: string) {
-      let user = new User(socket, username);
+      let user = new User(socket.id, username);
       controller.addUserToQueue(user);
       io.emit('add user', {
         socketId: socket.id,

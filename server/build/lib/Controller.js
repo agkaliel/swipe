@@ -6,7 +6,11 @@ var Controller = /** @class */ (function () {
     }
     Controller.prototype.addUserToQueue = function (user) {
         this.userQueue.push(user);
-        console.log('userQueue: ', this.userQueue);
+        console.log('userQueue: ');
+        this.userQueue.forEach(function (user) { return console.log('name: ', user.username); });
+    };
+    Controller.prototype.removeUserFromQueue = function (socket) {
+        console.log('removing, id: ', socket.id);
     };
     return Controller;
 }());
