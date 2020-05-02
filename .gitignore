@@ -1,8 +1,7 @@
 .idea/
-node_modules/
 
-../public/node_modules
-../public/js/
+public/node_modules
+public/js/
 
-../server/node_modules
-../server/js/
+server/node_modules
+server/build/
