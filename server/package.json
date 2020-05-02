@@ -1,14 +1,13 @@
 {
-    "name": "swipe",
+    "name": "swipe-server",
     "version": "0.0.1",
     "description": "Swipe card game",
     "main": "app.js",
     "dependencies": {
         "@types/node": "^11.13.4",
-        "@types/socket.io": "^2.1.2",
+        "@types/socket.io": "^2.1.4",
         "express": "^4.16.4",
         "socket.io": "^2.2.0",
-        "socketio": "^1.0.0",
         "typescript": "^3.3.3"
     },
     "scripts": {

@@ -1,0 +1,16 @@
+{
+    "name": "swipe-client",
+    "version": "0.0.1",
+    "description": "Swipe card game",
+    "main": "app.js",
+    "dependencies": {
+        "@types/socket.io-client": "^1.4.32",
+        "socket.io-client": "^2.3.0",
+        "typescript": "^3.3.3"
+    },
+    "scripts": {
+        "tsc": "tsc",
+        "prod": "tsc && node ./build/app.js",
+        "dev": "node ./build/app.js"
+    }
+}
