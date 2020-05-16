@@ -6,7 +6,7 @@ var Controller = /** @class */ (function () {
     }
     Controller.prototype.addUserToQueue = function (user) {
         this.userQueue.push(user);
-        console.log('userQueue: ');
+        console.log('user: ', user);
         this.userQueue.forEach(function (user) { return console.log('name: ', user.username); });
     };
     Controller.prototype.removeUserFromQueue = function (socket) {

@@ -59,7 +59,7 @@ class PlayingArea {
         }
     }
     
-    getRank(): number {
+    public getRank(): number {
         return (this._cardSlots[0] && this._cardSlots[0].card) ?  this._cardSlots[0].card.rank : CONSTANTS.maxRank;
     }
 }

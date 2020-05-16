@@ -6,5 +6,4 @@ class User {
         this.socketId = socketId;
         this.username = username;
     }
-
 }

@@ -1,0 +1,11 @@
+<h4>Create New Game</h4>
+<button mat-flat-button color="primary" (click)="newGame()">Create</button>
+
+<h4>Join Game</h4>
+<form [formGroup]="serverCodeForm" class="example-form">
+    <mat-form-field class="example-full-width">
+      <mat-label>Server Code</mat-label>
+      <input matInput formControlName="code" placeholder="Ex. 4G8Z">
+    </mat-form-field>
+</form>
+<button mat-flat-button color="primary" (click)="joinGame()">Join</button>

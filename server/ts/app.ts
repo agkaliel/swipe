@@ -35,6 +35,15 @@ io.on('connection', function(socket){
         username: user.username
       });
   })
+
+  
+  socket.on('test', function(payload) {
+      console.log('payload: ', payload);
+      io.emit('reply_channel', {
+        socketId: socket.id,
+        username: 'hello there'
+      })
+  })
 });
 
 http.listen(port, function(){

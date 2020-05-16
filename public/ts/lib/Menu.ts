@@ -34,10 +34,8 @@ class Menu {
 
     private setupSocket() {
         this.socket.on('add user', (userData) => {
-            console.log('adding user: ', userData);
             let usernameElement: HTMLElement = document.createElement('div');
-            usernameElement.innerText = userData.userame;
-            console.log('usernameElement: ', usernameElement);
+            usernameElement.innerText = userData.username ;
             this.userQueueElement.appendChild(usernameElement);
             this.userQueue.push(new User(userData.socketId, userData.username));
         });
@@ -53,6 +51,7 @@ class Menu {
     private onConfirmUsernameClick() {
         if (this.usernameInput.value.length) {
             this.socket.emit('user registration', this.usernameInput.value);
+            this.socket.emit('test', {val_one: 'test', val_two: 'other test'});
             this.userRegistrationElement.hidden = true;
             this.newGameButton.hidden = false;
         }

@@ -79,7 +79,7 @@ class Hand {
         this.disableCards()
     }
 
-    updateCardAvailability() {
+    private updateCardAvailability() {
         this.enableCards();
         let selectedCards: UICard[] = []
         this.cardsMap.forEach((c) => {

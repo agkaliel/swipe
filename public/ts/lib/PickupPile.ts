@@ -26,7 +26,7 @@ class PickupPile {
         });
     }
 
-    public addCard(card: Card): UICard {
+    private addCard(card: Card): UICard {
         let u = new UICard(card);
         this._cardsMap.set(card, u);
 
