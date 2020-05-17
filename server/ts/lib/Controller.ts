@@ -1,20 +1,41 @@
-import {User} from "./User";
+import {Game} from "./Game";
+import { SocketState } from "./SocketState";
 
-export class Controller {
-    userQueue: User[] = [];
+export class Controller extends SocketState {
+    static CODE_LENGTH = 5;
+    private gameMap: Map<string, Game>;
 
-    constructor() {
+    constructor(io) {
+        super(io);
+    }    
+
+    createGame(): string {
+        let game = new Game(this.generateCode(Controller.CODE_LENGTH));
+        this.gameMap.set(game.gameCode, game);
+        return game.gameCode;
     }
 
-    addUserToQueue(user: User) {
-        this.userQueue.push(user);
-        console.log('user: ', user);
-        this.userQueue.forEach(user => console.log('name: ', user.username));
+    joinGame(socket, payload) {
+        let gameCode = payload.gameCode;
+        let game = this.gameMap.get(gameCode)
     }
 
-    removeUserFromQueue(socket) {
-        console.log('removing, id: ', socket.id);
+    generateCode(length: number, remainingAttempts: number = 10): string {
+        if (remainingAttempts <= 0) {
+            throw "Could not generate unique code";
+        }
 
+        let result  = '';
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
+        for ( var i = 0; i < length; i++ ) {
+           result += characters.charAt(Math.floor(Math.random() * characters.length));
+        }
+
+        if (this.gameMap.has(result)) {
+            return this.generateCode(Controller.CODE_LENGTH, remainingAttempts - 1);
+        }
+
+        return result;
     }
-}
+} 

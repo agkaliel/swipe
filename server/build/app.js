@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var User_1 = require("./lib/User");
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
@@ -11,26 +10,22 @@ var Controller_1 = require("./lib/Controller");
 var controller = new Controller_1.Controller();
 // TODO: Figure out this import (typings?)
 app.use(express.static(path.join(__dirname, '../../public')));
+app.use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "http://localhost:4200");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
 app.get('/', function (req, res) {
     res.sendFile(__dirname + '/index.html');
 });
+app.post('/createGame', function (req, res) {
+    var gameCode = controller.createGame();
+    res.send({ gameCode: gameCode });
+});
 io.on('connection', function (socket) {
-    console.log('user connected');
-    socket.on('chat message', function (msg) {
-        console.log('broadcasting: ', msg);
-        io.emit('chat message', msg);
-    });
+    controller.registerUser(socket);
     socket.on('disconnect', function () {
-        controller.removeUserFromQueue(socket.id);
-        console.log('disconnected');
-    });
-    socket.on('user registration', function (username) {
-        var user = new User_1.User(socket.id, username);
-        controller.addUserToQueue(user);
-        io.emit('add user', {
-            socketId: socket.id,
-            username: user.username
-        });
+        controller.deregisterUser(socket);
     });
     socket.on('test', function (payload) {
         console.log('payload: ', payload);
@@ -38,6 +33,9 @@ io.on('connection', function (socket) {
             socketId: socket.id,
             username: 'hello there'
         });
+    });
+    socket.on('join_game', function (payload) {
+        controller.joinGame(payload);
     });
 });
 http.listen(port, function () {

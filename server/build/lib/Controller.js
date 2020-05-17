@@ -1,16 +1,26 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var User_1 = require("./User");
+var Game_1 = require("./Game");
 var Controller = /** @class */ (function () {
     function Controller() {
-        this.userQueue = [];
+        this.userMap = {};
+        this.games = [];
     }
-    Controller.prototype.addUserToQueue = function (user) {
-        this.userQueue.push(user);
-        console.log('user: ', user);
-        this.userQueue.forEach(function (user) { return console.log('name: ', user.username); });
+    Controller.prototype.registerUser = function (socket) {
+        var user = new User_1.User(socket.id);
+        this.userMap[socket.id] = user;
     };
-    Controller.prototype.removeUserFromQueue = function (socket) {
-        console.log('removing, id: ', socket.id);
+    Controller.prototype.deregisterUser = function (socket) {
+        delete this.userMap[socket.id];
+    };
+    Controller.prototype.createGame = function () {
+        var game = new Game_1.Game();
+        this.games.push(game);
+        return game.gameCode;
+    };
+    Controller.prototype.joinGame = function (payload) {
+        console.log('payload: ', payload);
     };
     return Controller;
 }());

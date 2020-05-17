@@ -1,0 +1,9 @@
+<div class="usernameSection"></div>
+<h4>Enter Username to Join:</h4>
+<form [formGroup]="usernameForm" class="form">
+    <mat-form-field class="formFullWidth">
+      <mat-label>Username</mat-label>
+      <input matInput formControlName="username">
+    </mat-form-field>
+</form>
+<button mat-flat-button color="primary" (click)="joinGame()">Join</button>

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { ApiService } from '../api-service.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-landing-page',
@@ -11,11 +12,11 @@ export class LandingPageComponent implements OnInit {
 
   public serverCodeForm: FormGroup;
 
-  constructor(private apiService: ApiService) { }
+  constructor(private apiService: ApiService,
+              private router: Router) { }
 
   ngOnInit(): void {
     this.setupForm();
-    this.subscribeToResponses();
   }
 
   setupForm() {
@@ -24,19 +25,15 @@ export class LandingPageComponent implements OnInit {
     });
   }
 
-  subscribeToResponses() {
-    this.apiService.serverResponses.subscribe(response => {
-      console.log('response: ', response);
+  newGame() {
+    this.apiService.createGame().subscribe((response: any) => {
+      this.router.navigate(['./joinGame/' + response.gameCode]);
     });
   }
 
-  newGame() {
-    console.log('clicked');
-  }
-
   joinGame() {
-    const payload = this.serverCodeForm.value;
-    this.apiService.clientTest(payload);
+    const gameCode = this.serverCodeForm.value.code;
+    this.router.navigate(['./joinGame/' + gameCode]);
   }
 
 

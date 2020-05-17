@@ -1,9 +1,16 @@
 export class User {
     socketId: string;
-    username: string;
+    private _username: string;
     
-    constructor(socketId, username) {
+    constructor(socketId) {
         this.socketId = socketId;
-        this.username = username;
+    }
+
+    set username(username: string) {
+        this._username = username;
+    }
+
+    get username() {
+        return this._username;
     }
 }

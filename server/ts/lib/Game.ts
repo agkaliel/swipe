@@ -1,14 +1,18 @@
 import {User} from './User';
+import { SocketState } from './SocketState';
 
 export class Game {
-    hostUser: User;
-    player2: User;
+    public users: User[];
+    public hostId: string;
+    public gameCode: string;
 
-    constructor(hostUser: User) {
-        this.hostUser = hostUser;
+    constructor(gameCode) {
+        this.gameCode = gameCode;
     }
 
     public addUser(user: User) {
 
     }
+
+
 }

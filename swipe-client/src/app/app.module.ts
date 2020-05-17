@@ -48,12 +48,17 @@ import {MatTreeModule} from '@angular/material/tree';
 import { LandingPageComponent } from './landing-page/landing-page.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+import { HttpClientModule } from '@angular/common/http';
+import { JoinGameComponent } from './join-game/join-game.component';
+import { AppRoutingModule } from './app-routing.module';
+
 const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
 
 @NgModule({
   declarations: [
     AppComponent,
-    LandingPageComponent
+    LandingPageComponent,
+    JoinGameComponent
   ],
   imports: [
     BrowserModule,
@@ -103,7 +108,9 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
     PortalModule,
     ScrollingModule,
     ReactiveFormsModule,
-    SocketIoModule.forRoot(config)
+    SocketIoModule.forRoot(config),
+    HttpClientModule,
+    AppRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent]
