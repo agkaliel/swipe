@@ -1,19 +1,21 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var User_1 = require("./User");
 var Game = /** @class */ (function () {
-    function Game() {
-        this.gameCode = this.generateCode(5);
+    function Game(gameCode, hostId) {
+        this.users = [];
+        this.gameCode = gameCode;
+        this.hostId = hostId;
     }
-    Game.prototype.addUser = function (user) {
+    Game.prototype.addUser = function (userId, username) {
+        var user = new User_1.User(userId, username);
+        this.users.push(user);
+        return user;
     };
-    Game.prototype.generateCode = function (length) {
-        var result = '';
-        var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        var charactersLength = characters.length;
-        for (var i = 0; i < length; i++) {
-            result += characters.charAt(Math.floor(Math.random() * charactersLength));
-        }
-        return result;
+    Game.prototype.getGameState = function () {
+        return {
+            users: this.users.map(function (user) { return user.toJSON(); })
+        };
     };
     return Game;
 }());

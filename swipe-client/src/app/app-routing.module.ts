@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { JoinGameComponent } from './join-game/join-game.component';
 import { LandingPageComponent } from './landing-page/landing-page.component';
+import { GameComponent } from './game/game.component';
 
 
 const appRoutes: Routes = [
@@ -12,6 +13,10 @@ const appRoutes: Routes = [
   {
     path: 'landingPage',
     component: LandingPageComponent,
+  },
+  {
+    path: 'game/:gameCode',
+    component: GameComponent,
   },
   { path: '',   redirectTo: '/landingPage', pathMatch: 'full' }
 ];

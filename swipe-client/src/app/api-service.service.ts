@@ -7,17 +7,35 @@ import { HttpClient } from '@angular/common/http';
 })
 export class ApiService {
   static BASE_URL = 'http://localhost:3000';
-  serverResponses = this.socket.fromEvent<any>('reply_channel');
-  gameCreated = this.socket.fromEvent<any>('game_created');
+  playerJoined = this.socket.fromEvent<any>('player_joined');
 
   constructor(private socket: Socket,
-              private http: HttpClient) { }
+              private http: HttpClient) {}
+// TODO: Prevent a user from joining a game twice
+// TODO: Allow joining from URL link
+// TODO: Allow leaving? 
+// Allow 'starting' game (lock it down)
+// Allow taking turns incrementing (or decrementing) a number
+  joinGame(gameCode: string, username: string) {
+    const userId = localStorage.getItem('userId');
+    return this.http.post(ApiService.BASE_URL + '/joinGame', {gameCode, username, userId});
+  }
 
-  joinGame(gameCode: string) {
-    this.socket.emit('join_game', {gameCode});
+  getGameState(gameCode: string) {
+    return this.http.get(ApiService.BASE_URL + '/gameState/' + gameCode);
   }
 
   createGame() {
-    return this.http.post(ApiService.BASE_URL + '/createGame', {});
+    const userId = localStorage.getItem('userId');
+    return this.http.post(ApiService.BASE_URL + '/createGame', {userId});
+  }
+
+  generateUserId() {
+    return this.http.post(ApiService.BASE_URL + '/generateUserId', {});
+  }
+
+  connectToGame(gameCode: string) {
+    const userId = localStorage.getItem('userId');
+    this.socket.emit('connect_to_game', {gameCode, userId});
   }
 }

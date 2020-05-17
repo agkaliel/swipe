@@ -1,19 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var User = /** @class */ (function () {
-    function User(socketId) {
-        this.socketId = socketId;
+    function User(userId, username) {
+        this.userId = userId;
+        this.username = username;
     }
-    Object.defineProperty(User.prototype, "username", {
-        get: function () {
-            return this._username;
-        },
-        set: function (username) {
-            this._username = username;
-        },
-        enumerable: true,
-        configurable: true
-    });
+    User.prototype.getShortId = function () {
+        return this.userId.substr(0, User.SHORT_ID_LENGTH);
+    };
+    User.prototype.toJSON = function () {
+        return {
+            shortId: this.getShortId(),
+            username: this.username
+        };
+    };
+    User.SHORT_ID_LENGTH = 5;
     return User;
 }());
 exports.User = User;

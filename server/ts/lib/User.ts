@@ -1,16 +1,22 @@
 export class User {
-    socketId: string;
-    private _username: string;
+    static SHORT_ID_LENGTH = 5;
+
+    userId: string;
+    username: string;
     
-    constructor(socketId) {
-        this.socketId = socketId;
+    constructor(userId: string, username: string) {
+        this.userId = userId;
+        this.username = username;
     }
 
-    set username(username: string) {
-        this._username = username;
+    getShortId(): string {
+        return this.userId.substr(0, User.SHORT_ID_LENGTH);
     }
 
-    get username() {
-        return this._username;
+    toJSON() {
+        return {
+            shortId: this.getShortId(),
+            username: this.username
+        }
     }
 }

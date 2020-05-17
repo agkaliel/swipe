@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormControl } from '@angular/forms';
 import { ApiService } from '../api-service.service';
 
@@ -13,6 +13,7 @@ export class JoinGameComponent implements OnInit {
   usernameForm: FormGroup;
 
   constructor(private route: ActivatedRoute,
+              private router: Router,
               private apiService: ApiService) { }
 
   ngOnInit(): void {
@@ -33,7 +34,10 @@ export class JoinGameComponent implements OnInit {
   }
 
   joinGame() {
-    this.apiService.joinGame(this.gameCode);
+    const username = this.usernameForm.value.username;
+    this.apiService.joinGame(this.gameCode, username).subscribe(response => {
+      this.router.navigate(['./game/' + this.gameCode]);
+    });
   }
 
 }
