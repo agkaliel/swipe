@@ -11,14 +11,14 @@ const appRoutes: Routes = [
     component: JoinGameComponent,
   },
   {
-    path: 'landingPage',
+    path: 'home',
     component: LandingPageComponent,
   },
   {
     path: 'game/:gameCode',
     component: GameComponent,
   },
-  { path: '',   redirectTo: '/landingPage', pathMatch: 'full' }
+  { path: '',   redirectTo: '/home', pathMatch: 'full' }
 ];
 
 @NgModule({

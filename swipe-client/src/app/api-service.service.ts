@@ -11,7 +11,6 @@ export class ApiService {
 
   constructor(private socket: Socket,
               private http: HttpClient) {}
-// TODO: Prevent a user from joining a game twice
 // TODO: Allow joining from URL link
 // TODO: Allow leaving? 
 // Allow 'starting' game (lock it down)

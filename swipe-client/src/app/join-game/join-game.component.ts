@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormControl } from '@angular/forms';
 import { ApiService } from '../api-service.service';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-join-game',
@@ -14,6 +15,7 @@ export class JoinGameComponent implements OnInit {
 
   constructor(private route: ActivatedRoute,
               private router: Router,
+              private snackBar: MatSnackBar,
               private apiService: ApiService) { }
 
   ngOnInit(): void {
@@ -37,7 +39,10 @@ export class JoinGameComponent implements OnInit {
     const username = this.usernameForm.value.username;
     this.apiService.joinGame(this.gameCode, username).subscribe(response => {
       this.router.navigate(['./game/' + this.gameCode]);
+    }, error => {
+      this.snackBar.open('Can\'t join game', 'Dismiss', {
+        duration: 2000,
+      });
     });
   }
-
 }

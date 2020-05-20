@@ -20,20 +20,29 @@ app.get('/', function (req, res) {
     res.sendFile(__dirname + '/index.html');
 });
 app.get('/gameState/:gameCode', function (req, res) {
+    console.log('GET /gameState/' + req.params.gameCode);
     var gameState = controller.getGameState(req);
     res.send({ gameState: gameState });
 });
 app.post('/generateUserId', function (req, res) {
+    console.log('POST /generateUserId');
     var userId = controller.generateUserId();
     res.send({ userId: userId });
 });
 app.post('/createGame', function (req, res) {
+    console.log('POST /createGame');
     var gameCode = controller.createGame(req.body.userId);
     res.send({ gameCode: gameCode });
 });
 app.post('/joinGame', function (req, res) {
-    controller.joinGame(req);
-    res.send({});
+    console.log('POST /joinGame');
+    try {
+        controller.joinGame(req);
+        res.send({});
+    }
+    catch (err) {
+        res.status(403).send();
+    }
 });
 io.on('connection', function (socket) {
     socket.on('disconnect', function () {

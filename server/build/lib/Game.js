@@ -8,6 +8,9 @@ var Game = /** @class */ (function () {
         this.hostId = hostId;
     }
     Game.prototype.addUser = function (userId, username) {
+        if (!this.userCanJoin(userId, username)) {
+            throw "USER_CONFLICT";
+        }
         var user = new User_1.User(userId, username);
         this.users.push(user);
         return user;
@@ -16,6 +19,15 @@ var Game = /** @class */ (function () {
         return {
             users: this.users.map(function (user) { return user.toJSON(); })
         };
+    };
+    Game.prototype.userCanJoin = function (userId, username) {
+        var canJoin = true;
+        this.users.forEach(function (user) {
+            if (user.userId === userId || user.username == username) {
+                canJoin = false;
+            }
+        });
+        return canJoin;
     };
     return Game;
 }());

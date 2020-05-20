@@ -23,23 +23,32 @@ app.get('/', function(req, res){
 });
 
 app.get('/gameState/:gameCode', function(req, res){
+  console.log('GET /gameState/' + req.params.gameCode);
   let gameState = controller.getGameState(req)
   res.send({gameState});
 });
 
 app.post('/generateUserId', function(req, res) {
+  console.log('POST /generateUserId');
   let userId = controller.generateUserId();
   res.send({userId});
 });
 
 app.post('/createGame', function(req, res) {
+  console.log('POST /createGame');
   let gameCode = controller.createGame(req.body.userId);
   res.send({gameCode: gameCode});
 });
 
 app.post('/joinGame', function(req, res) {
-  controller.joinGame(req);
-  res.send({});
+  console.log('POST /joinGame');
+  try {
+    controller.joinGame(req);
+    res.send({});
+  } catch (err) {
+    res.status(403).send();
+  }
+
 });
 
 io.on('connection', function(socket){

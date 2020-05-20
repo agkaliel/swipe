@@ -12,7 +12,7 @@ export class AppComponent implements OnInit {
   constructor(private apiService: ApiService) { }
 
   ngOnInit(): void {
-    const userId = localStorage.getItem('user_id');
+    const userId = localStorage.getItem('userId');
     if (!userId) {
       this.generateUserId();
     }
